@@ -18,6 +18,7 @@ public:
 	int blockRandFirst;
 	int blockRandSecond;
 
+	int nextBlockMergin;
 
 	int blockNumber;
 
@@ -56,6 +57,8 @@ public:
 		blockNumber = getBlockNo(blockRandFirst, blockRandSecond);
 		blockExistMode = blockNumber;
 
+		nextBlockMergin = 0;
+
 		blockExistFlg = false;
 
 		blockFlg = false;
@@ -83,6 +86,7 @@ public:
 	void Move()
 	{
 		pos_y = pos_y - speed;
+		nextBlockMergin -= speed;
 	}
 
 	void ExistCheck()

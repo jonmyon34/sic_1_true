@@ -69,6 +69,7 @@ public:
 		invincibleFlg = false;
 
 
+
 		player_gh = LoadGraph("player1.png");
 
 		flashCnt = 0;
@@ -146,6 +147,7 @@ public:
 		default:
 			break;
 		}
+
 
 	}
 

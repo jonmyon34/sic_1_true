@@ -59,11 +59,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//c‚Ìó‹µ‚Ì“–‚½‚è”»’è
-		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg)
+		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMergin <= 0)
 		{
 			if (checkHitBlock(pl->pos_x, bl->pos_x))
 			{
 				pl->hitFlg = true;
+				bl->nextBlockMergin = pl->pos_y - bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT);
 				pl->acceleration--;
 				bl->blockExistMode--;
 			}
