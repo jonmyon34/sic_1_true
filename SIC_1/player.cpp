@@ -1,5 +1,14 @@
 #include"all.h"
 
+bool checkHitPosY(int pl_pos_y, int bl_pos_y, int blockNumber, int blockExistMode)
+{
+	if (pl_pos_y + PL_WIDTH >= bl_pos_y + (blockNumber - blockExistMode)*BLOCK_HEIGHT&&	pl_pos_y < bl_pos_y + (blockNumber - blockExistMode + 1)*BLOCK_HEIGHT)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool checkHitBlock(int pl_pos_x, int bl_pos_x)
 {
 	if (pl_pos_x + PL_WIDTH > bl_pos_x && bl_pos_x + BLOCK_WIDTH > pl_pos_x)

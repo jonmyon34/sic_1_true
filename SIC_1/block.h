@@ -98,10 +98,14 @@ public:
 		
 		for (int i = 0; i < blockNumber; i++)
 		{
-			if (blockNumber - blockExistMode < i)
+			if (blockNumber - blockExistMode <= i)
 			{
 				//DrawExtendGraph(pos_x, (pos_y + i*height), pos_x + width, (pos_y + i*height) + height, block_gh, true);
 				DrawRectGraph(pos_x, (pos_y + i*height), 0, 0, PL_WIDTH, PL_HEIGHT, block_gh, true, false);
+			}
+			else
+			{
+
 			}
 		}
 	}

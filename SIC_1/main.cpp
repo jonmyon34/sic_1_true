@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		DrawRotaGraph(WINDOW_X / 2, WINDOW_Y / 2, 1.0, rad, testback, true, false);
 
 
-		//printfDx("%d", pl->acceleration);
+		printfDx("%d", pl->acceleration);
 
 		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
@@ -59,20 +59,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//縦の状況の当たり判定
-		if (pl->pos_y + PL_WIDTH > bl->pos_y && bl->pos_y + BLOCK_HEIGHT > pl->pos_y && !pl->invincibleFlg)
+		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg)
 		{
-			pl->hitFlg = checkHitBlock(pl->pos_x, bl->pos_x);
-			bl->blockExistMode--;
+			if (checkHitBlock(pl->pos_x, bl->pos_x))
+			{
+				pl->hitFlg = true;
+				pl->acceleration--;
+				bl->blockExistMode--;
+			}
 		}
 
-		if (pl->hitFlg&&pl->pos_y < bl->pos_y)
-		{
-			pl->invincibleFlg = true;
-		}
-		else if (pl->invincibleFlg && !pl->damageFlg)
-		{
-			pl->invincibleFlg = false;
-		}
 
 		//ブロックフラグ管理
 		if (bl->blockFlg)
@@ -89,6 +85,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
+		if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+		{
+			pl->invincibleFlg = true;
+		}
+		else if (pl->invincibleFlg && !pl->damageFlg)
+		{
+			pl->invincibleFlg = false;
+		}
 
 
 

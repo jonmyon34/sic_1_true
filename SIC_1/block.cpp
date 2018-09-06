@@ -38,6 +38,6 @@ int getBlockNo(int first, int second)
 		return 6;
 
 	default:
-		return false;
+		return 6;
 	}
 }

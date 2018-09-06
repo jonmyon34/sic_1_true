@@ -20,6 +20,7 @@
 
 #define PL_MAX_ACCELERATION 6
 
+bool checkHitPosY(int, int, int, int);
 bool checkHitBlock(int, int);
 
 
@@ -178,21 +179,23 @@ public:
 
 	void Accele()
 	{
-		if (acceleCnt >= 120)
+		if (acceleration < PL_MAX_ACCELERATION)
 		{
-			acceleration++;
-			acceleCnt = 0;
+			if (acceleCnt >= 120)
+			{
+				acceleration++;
+				acceleCnt = 0;
+			}
+			else
+			{
+				acceleCnt++;
+			}
 		}
-		else
-		{
-			acceleCnt++;
-		}
-
-		if (hitFlg && !invincibleFlg)
-		{
-			acceleration--;
-			invincibleFlg = true;
-		}
+		//if (hitFlg && !invincibleFlg)
+		//{
+		//	acceleration--;
+		//	invincibleFlg = true;
+		//}
 	}
 
 	void All()
