@@ -4,6 +4,9 @@
 #define PL_SPEED_MAX 9
 #define PL_SPEED_INC 0.2
 
+#define BLOCK_RISE_MODE 0
+#define BLOCK_FALL_MODE 2
+
 #define PL_RIGHTSIDE_MODE 1
 #define PL_LEFTSIDE_MODE 3
 
@@ -94,9 +97,10 @@ public:
 	void Move()
 	{
 
-		switch (directionMode % 2)
+		switch (directionMode)
 		{
-		case 0:
+		case BLOCK_RISE_MODE:
+		case BLOCK_FALL_MODE:
 
 			if (CheckHitKey(KEY_INPUT_LEFT))
 			{
@@ -127,7 +131,8 @@ public:
 			break;
 
 
-		case 1:
+		case PL_RIGHTSIDE_MODE:
+		case PL_LEFTSIDE_MODE:
 
 			if (CheckHitKey(KEY_INPUT_UP))
 			{

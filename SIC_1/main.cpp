@@ -11,6 +11,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	player ppl;
 	block *bl = new block();
 	back *bk = new back();
+	obstacle *ob = new obstacle();
 
 	bool spaceFlg = false;
 	int testback_1;
@@ -75,7 +76,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 			//ブロック
-			bl->blockFlg = true;
+			//bl->blockFlg = true;
+
+			//横モードの障害物
+			ob->obstacleFlg = true;
+
 
 
 			spaceFlg = true;
@@ -158,10 +163,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					bl->blockFlg = false;
 					bl->GetPos();
 				}
+				break;
 
 			default:
 				break;
 			}
+		}
+
+		//障害物フラグ管理
+		if (ob->obstacleFlg)
+		{
+			ob->Move();
+			ob->View();
+			switch (ob->directionMode)
+			{
+			case PL_RIGHTSIDE_MODE:
+				if (ob->pos_x > WINDOW_X + OBSTACLE_OUT_POS_X)
+				{
+					ob->obstacleFlg = false;
+					ob->GetPos();
+				}
+				break;
+
+			case PL_LEFTSIDE_MODE:
+				if (ob->pos_x < -OBSTACLE_OUT_POS_X)
+				{
+					ob->obstacleFlg = false;
+					ob->GetPos();
+				}
+			}
+			
 		}
 
 
@@ -272,6 +303,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	delete pl;
 	delete bl;
 	delete bk;
+	delete ob;
 
 
 	DxLib_End();
