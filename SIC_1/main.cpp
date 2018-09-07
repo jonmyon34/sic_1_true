@@ -7,11 +7,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (DxLib_Init() == -1) return -1;
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	//可変スクリーンサイズ
+	SetGraphMode(WINDOW_X * MAX_WINDOW_EXTEND_RATE, WINDOW_Y * MAX_WINDOW_EXTEND_RATE, 32);//描画できる最大の解像度を設定
+	int windowSIze = MAX_WINDOW_EXTEND_RATE;//ウィンドウ拡大率の初期値
+	int tempScreen = MakeScreen(WINDOW_X, WINDOW_Y, TRUE);//描画可能な仮画面を作成
+
+	SetWindowSize(WINDOW_X * windowSIze, WINDOW_Y * windowSIze);
+
+
 	player *pl = new player();
 	player ppl;
 	block *bl = new block();
 	back *bk = new back();
 	obstacle *ob = new obstacle();
+	scene *se = new scene();
 
 	bool spaceFlg = false;
 	int testback_1;
@@ -20,8 +29,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int rad_rand;
 	player backscroll;
 
-	testback_1 = LoadGraph("SIC_1_back_test1.png");
-	testback_2 = LoadGraph("SIC1_back_test2.png");
+	testback_1 = LoadGraph("Data/Image/SIC_1_back_test1.png");
+	testback_2 = LoadGraph("Data/Image/SIC1_back_test2.png");
 
 	SetFontSize(128);
 	int color = GetColor(0, 155, 250);
@@ -33,6 +42,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	while (ProcessMessage() != -1)
 	{
+		//キー状態更新 //KB = キーボード //JOY = ジョイパッド //[]に指定のキーの定数を入れて使う
+		gpUpdateKey();
+
+		//仮画面に描画
+		SetDrawScreen(tempScreen);
+
+		//todo
+		//
+
+		//サイズ変更
+		if (KB[KEY_INPUT_F11] == 1)
+		{
+			windowSIze++;
+			windowSIze = windowSIze % (MAX_WINDOW_EXTEND_RATE + 1);
+			if (windowSIze == 0)windowSIze = 1;
+			SetWindowSize(WINDOW_X * windowSIze, WINDOW_Y * windowSIze);
+		}
+
+
 		switch (pl->directionMode)
 		{
 		case BLOCK_RISE_MODE:
@@ -49,8 +77,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 
-		//backscroll.acceleration = pl->acceleration;
-		//bk->All(backscroll);
+
+		//背景
+		//まだループしてないのでループさせる
+		//bk->All(*pl);
 		
 
 		printfDx("%d", pl->acceleration);
@@ -59,6 +89,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			delete pl;
 			delete bl;
+			delete bk;
+			delete se;
+			delete ob;
 
 			exit(true);
 
@@ -74,13 +107,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			//pl->pos_x = direction_pl_pos_x(rad_rand);
 			//pl->pos_y = direction_pl_pos_y(rad_rand);
 
+			switch (pl->directionMode)
+			{
+			case BLOCK_RISE_MODE:
+			case BLOCK_FALL_MODE:
+				//ブロック
+				bl->blockFlg = true;
 
-			//ブロック
-			//bl->blockFlg = true;
-
-			//横モードの障害物
-			ob->obstacleFlg = true;
-
+			case PL_RIGHTSIDE_MODE:
+			case PL_LEFTSIDE_MODE:
+				//横モードの障害物
+				ob->obstacleFlg = true;
+			}
 
 
 			spaceFlg = true;
@@ -295,6 +333,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pl->Direction();
 		}
 
+		//仮画面を描画
+		SetDrawScreen(DX_SCREEN_BACK);
+		DrawExtendGraph(0, 0, WINDOW_X * MAX_WINDOW_EXTEND_RATE, WINDOW_Y * MAX_WINDOW_EXTEND_RATE, tempScreen, FALSE);
+
 		ScreenFlip();
 		ClearDrawScreen();
 	}
@@ -304,6 +346,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	delete bl;
 	delete bk;
 	delete ob;
+	delete se;
 
 
 	DxLib_End();

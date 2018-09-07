@@ -6,8 +6,12 @@
 #include<time.h>
 
 
-#define WINDOW_X 1280
-#define WINDOW_Y 736
+#define WINDOW_X 384//1280
+//384が仕様
+#define WINDOW_Y 216//736
+//216が仕様
+#define MAX_WINDOW_EXTEND_RATE 5
+
 
 
 
@@ -24,8 +28,9 @@
 #define EXIST_MAX_SIDE_RANGE_Y WINDOW_Y/4*3
 
 
+#include"KBpreview.h"
 
-
+#include"scene.h"
 #include"player.h"
 #include"back.h"
 #include"block.h"

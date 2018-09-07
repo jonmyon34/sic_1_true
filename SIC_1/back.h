@@ -13,7 +13,7 @@ public:
 	{
 		y = 0;
 		scrollspeedsetter = 0;
-		back_gh = LoadGraph("BG1.png");
+		back_gh = LoadGraph("Data/Image/BG1.png");
 	}
 	void Draw();
 	void Move(player);

@@ -82,8 +82,8 @@ public:
 
 
 
-		player_gh = LoadGraph("player1.png");
-		player_gh_death = LoadGraph("Pl_ps.png");
+		player_gh = LoadGraph("Data/Image/player1.png");
+		player_gh_death = LoadGraph("Data/Image/Pl_ps.png");
 
 		anim_x = 0;
 		anim_y = 0;

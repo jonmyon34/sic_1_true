@@ -22,15 +22,6 @@ public:
 
 	int blockNumber;
 
-	//struct blockExistFlg
-	//{
-	//	bool block1;
-	//	bool block2;
-	//	bool block3;
-	//	bool block4;
-	//	bool block5;
-	//	bool block6;
-	//};
 
 	bool blockExistFlg;
 
@@ -49,7 +40,7 @@ public:
 
 		speed = 12;
 
-		block_gh = LoadGraph("chip1.png");
+		block_gh = LoadGraph("Data/Image/chip1.png");
 
 		block_break_Anm_Flg = false;
 

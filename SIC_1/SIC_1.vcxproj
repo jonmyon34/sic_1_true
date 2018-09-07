@@ -151,16 +151,21 @@
     <ClCompile Include="back.cpp" />
     <ClCompile Include="block.cpp" />
     <ClCompile Include="item.cpp" />
+    <ClCompile Include="KBpreview.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="ToDo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all.h" />
     <ClInclude Include="back.h" />
     <ClInclude Include="block.h" />
+    <ClInclude Include="KBpreview.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -27,7 +27,7 @@ public:
 
 		directionMode = PL_RIGHTSIDE_MODE;
 
-		obstacle_gh = LoadGraph("chip1.png");
+		obstacle_gh = LoadGraph("Data/Image/chip1.png");
 
 		obstacleFlg = false;
 	}
