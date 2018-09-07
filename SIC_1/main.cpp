@@ -35,6 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
 			delete pl;
+			delete bl;
 
 			exit(true);
 
@@ -58,26 +59,57 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = true;
 		}
 
-		//縦の状況の当たり判定
-		//全体的に気持ち悪すぎるし時間あれば修正
-		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0)
+		//縦の当たり判定
+		//全体的に気持ち悪すぎるしなんでここに書いてんの？時間あれば修正
+		switch (pl->directionMode)
 		{
-			if (checkHitBlock(pl->pos_x, bl->pos_x))
+		case BLOCK_RISE_MODE:
+			if (check_hit_pos_y_rise(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0)
 			{
-				pl->hitFlg = true;
-				bl->nextBlockMargin = pl->pos_y - (bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT));
-				if (bl->blockExistMode > 0)
+				if (checkHitBlock(pl->pos_x, bl->pos_x))
 				{
-					bl->blockExistMode--;
-					pl->acceleration--;
-				}
+					pl->hitFlg = true;
+					bl->nextBlockMargin = pl->pos_y - (bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT));
+					if (bl->blockExistMode > 0)
+					{
+						bl->blockExistMode--;
+						pl->acceleration--;
+					}
 
-				if (pl->acceleration <= 0)
-				{
-					pl->hp--;
-					pl->damageFlg = true;
+					if (pl->acceleration <= 0)
+					{
+						pl->hp--;
+						pl->damageFlg = true;
+					}
 				}
 			}
+			break;
+
+		case BLOCK_FALL_MODE:
+			if (check_hit_pos_y_fall(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0)
+			{
+				if (checkHitBlock(pl->pos_x, bl->pos_x))
+				{
+					pl->hitFlg = true;
+					bl->nextBlockMargin = pl->pos_y - bl->pos_y - ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT);
+					if (bl->blockExistMode > 0)
+					{
+						bl->blockExistMode--;
+						pl->acceleration--;
+					}
+
+					if (pl->acceleration <= 0)
+					{
+						pl->hp--;
+						pl->damageFlg = true;
+					}
+				}
+			}
+			break;
+
+
+		default:
+			break;
 		}
 
 
@@ -87,24 +119,56 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bl->Move();
 			bl->ExistCheck();
 			bl->View();
-
-			if (bl->pos_y < BLOCK_OUT_POS_Y)
+			switch (bl->directionMode)
 			{
-				bl->blockFlg = false;
-				bl->GetPos();
+			case BLOCK_RISE_MODE:
+				if (bl->pos_y < BLOCK_OUT_POS_Y)
+				{
+					bl->blockFlg = false;
+					bl->GetPos();
+				}
+				break;
+
+			case BLOCK_FALL_MODE:
+				if (bl->pos_y > WINDOW_Y - BLOCK_OUT_POS_Y)
+				{
+					bl->blockFlg = false;
+					bl->GetPos();
+				}
+
+			default:
+				break;
 			}
 		}
 
 
-		if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+		switch (bl->directionMode)
 		{
-			pl->invincibleFlg = true;
-		}
-		else if (pl->invincibleFlg && !pl->damageFlg)
-		{
-			pl->invincibleFlg = false;
-		}
+		case BLOCK_RISE_MODE:
+			if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+			{
+				pl->invincibleFlg = true;
+			}
+			else if (pl->invincibleFlg && !pl->damageFlg)
+			{
+				pl->invincibleFlg = false;
+			}
+			break;
 
+		case BLOCK_FALL_MODE:
+			if (pl->hitFlg && pl->pos_y > bl->pos_y - ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) + BLOCK_HEIGHT && !pl->invincibleFlg)
+			{
+				pl->invincibleFlg = true;
+			}
+			else if (pl->invincibleFlg && !pl->damageFlg)
+			{
+				pl->invincibleFlg = false;
+			}
+			break;
+
+		default:
+			break;
+		}
 
 
 		if (!CheckHitKey(KEY_INPUT_SPACE))
@@ -113,16 +177,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
-
 		pl->All();
 
-		if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+
+		//動いた前後とかの関係で二回やると今のところちょうどいいけど、もしかしたらどうにかなるかもしれないし、あるいはどうにもならないかもしれない
+
+		switch (bl->directionMode)
 		{
-			pl->invincibleFlg = true;
-		}
-		else if (pl->invincibleFlg && !pl->damageFlg)
-		{
-			pl->invincibleFlg = false;
+		case BLOCK_RISE_MODE:
+			if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+			{
+				pl->invincibleFlg = true;
+			}
+			else if (pl->invincibleFlg && !pl->damageFlg)
+			{
+				pl->invincibleFlg = false;
+			}
+			break;
+
+		case BLOCK_FALL_MODE:
+			if (pl->hitFlg && pl->pos_y > bl->pos_y - ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) + BLOCK_HEIGHT && !pl->invincibleFlg)
+			{
+				pl->invincibleFlg = true;
+			}
+			else if (pl->invincibleFlg && !pl->damageFlg)
+			{
+				pl->invincibleFlg = false;
+			}
+			break;
+
+		default:
+			break;
 		}
 
 
@@ -130,13 +215,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//位置変更
 		if (CheckHitKey(KEY_INPUT_0))
 		{
-			pl->directionMode = 0;
+			pl->directionMode = BLOCK_RISE_MODE;
+			bl->directionMode = BLOCK_RISE_MODE;
 			pl->Direction();
 		}
 
 		if (CheckHitKey(KEY_INPUT_2))
 		{
-			pl->directionMode = 2;
+			pl->directionMode = BLOCK_FALL_MODE;
+			bl->directionMode = BLOCK_FALL_MODE;
 			pl->Direction();
 		}
 
@@ -146,6 +233,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	delete pl;
+	delete bl;
 
 
 	DxLib_End();

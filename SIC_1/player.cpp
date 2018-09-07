@@ -1,8 +1,17 @@
 #include"all.h"
 
-bool checkHitPosY(int pl_pos_y, int bl_pos_y, int blockNumber, int blockExistMode)
+bool check_hit_pos_y_rise(int pl_pos_y, int bl_pos_y, int blockNumber, int blockExistMode)
 {
-	if (pl_pos_y + PL_WIDTH >= bl_pos_y + (blockNumber - blockExistMode)*BLOCK_HEIGHT&&	pl_pos_y < bl_pos_y + (blockNumber - blockExistMode + 1)*BLOCK_HEIGHT)
+	if (pl_pos_y + PL_HEIGHT >= bl_pos_y + (blockNumber - blockExistMode)*BLOCK_HEIGHT&&	pl_pos_y <= bl_pos_y + (blockNumber - blockExistMode + 1)*BLOCK_HEIGHT)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool check_hit_pos_y_fall(int pl_pos_y, int bl_pos_y, int blockNumber, int blockExistMode)
+{
+	if (pl_pos_y + PL_HEIGHT >= bl_pos_y - ((blockNumber - blockExistMode)*BLOCK_HEIGHT) && pl_pos_y <= bl_pos_y - ((blockNumber - blockExistMode)* BLOCK_HEIGHT) + BLOCK_HEIGHT)
 	{
 		return true;
 	}

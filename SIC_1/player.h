@@ -20,7 +20,8 @@
 
 #define PL_MAX_ACCELERATION 6
 
-bool checkHitPosY(int, int, int, int);
+bool check_hit_pos_y_rise(int, int, int, int);
+bool check_hit_pos_y_fall(int, int, int, int);
 bool checkHitBlock(int, int);
 int direction_pl_pos_x(int);
 int direction_pl_pos_y(int);
@@ -38,6 +39,8 @@ public:
 
 	int item;
 
+	int anim_x, anim_y;
+
 	bool hitFlg;
 	bool damageFlg;
 
@@ -49,6 +52,7 @@ public:
 
 	int flashCnt;
 	int acceleCnt;
+	int animCnt;
 
 	bool plLiveFlg;
 
@@ -76,8 +80,12 @@ public:
 		player_gh = LoadGraph("player1.png");
 		player_gh_death = LoadGraph("Pl_ps.png");
 
+		anim_x = 0;
+		anim_y = 0;
+
 		flashCnt = 0;
 		acceleCnt = 0;
+		animCnt = 0;
 
 	}
 
@@ -162,13 +170,30 @@ public:
 			switch (damageFlg)
 			{
 			case false:
-				DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+				if (acceleration == PL_MAX_ACCELERATION)
+				{
+					anim_x = (animCnt / 5) % 8;
+					anim_y = PL_HEIGHT;
+					animCnt++;
+					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+				}
+				else
+				{
+					anim_x = (animCnt / 5) % 5;
+					anim_y = 0;
+					animCnt++;
+					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+				}
+
 				break;
 
 			case true:
 				if (((flashCnt / 10) % 2) && flashCnt < FLASHCNT_MAX)
 				{
-					DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					anim_x = (animCnt / 5) % 4;
+					anim_y = PL_HEIGHT * 2;
+					animCnt++;
+					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
 					flashCnt++;
 				}
 				else if (flashCnt >= FLASHCNT_MAX)

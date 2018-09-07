@@ -61,7 +61,7 @@ public:
 
 		blockNumber = getBlockNo(blockRandFirst, blockRandSecond);
 		blockExistMode = blockNumber;
-		directionMode = 0;
+		directionMode = BLOCK_RISE_MODE;
 
 		nextBlockMargin = 0;
 
@@ -72,7 +72,8 @@ public:
 
 	void GetPos()
 	{
-		pos_x = getBlockRandPos_x();
+		//pos_x = getBlockRandPos_x();
+		pos_x = WINDOW_X / 2;
 
 		switch (directionMode)
 		{
@@ -81,7 +82,7 @@ public:
 			break;
 
 		case BLOCK_FALL_MODE:
-			pos_y = 0;
+			pos_y = 0 - BLOCK_HEIGHT;
 			break;
 
 		default:
@@ -99,8 +100,21 @@ public:
 
 	void Move()
 	{
-		pos_y = pos_y - speed;
-		nextBlockMargin -= speed;
+		switch (directionMode)
+		{
+		case BLOCK_RISE_MODE:
+			pos_y -= speed;
+			nextBlockMargin -= speed;
+			break;
+
+		case BLOCK_FALL_MODE:
+			pos_y += speed;
+			nextBlockMargin -= speed;
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void ExistCheck()
@@ -119,13 +133,23 @@ public:
 			if (blockNumber - blockExistMode <= i)
 			{
 				//DrawExtendGraph(pos_x, (pos_y + i*height), pos_x + width, (pos_y + i*height) + height, block_gh, true);
-				DrawRectGraph(pos_x, (pos_y + i*height), 0, 0, PL_WIDTH, PL_HEIGHT, block_gh, true, false);
+
+				if (directionMode == BLOCK_RISE_MODE)	//下から上へ
+				{
+					DrawRectGraph(pos_x, (pos_y + i*height), 0, 0, PL_WIDTH, PL_HEIGHT, block_gh, true, false);
+				}
+				else if (directionMode == BLOCK_FALL_MODE)	//上から下へ
+				{
+					DrawRectGraph(pos_x, (pos_y - i*height), 0, 0, PL_WIDTH, PL_HEIGHT, block_gh, true, false);
+				}
 			}
 			else
 			{
-
+				//ここに壊れた時のアニメーション
 			}
 		}
 	}
+
+
 };
 
