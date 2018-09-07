@@ -39,9 +39,9 @@ void checkHitEnemy()
 
 }
 
-int direction_pl_pos_x(int rad_rand)
+int direction_pl_pos_x(int directionMode)
 {
-	switch (rad_rand)
+	switch (directionMode)
 	{
 	case 0:
 		return PL_UP_FIRST_X;
@@ -60,9 +60,9 @@ int direction_pl_pos_x(int rad_rand)
 	}
 }
 
-int direction_pl_pos_y(int rad_rand)
+int direction_pl_pos_y(int directionMode)
 {
-	switch (rad_rand)
+	switch (directionMode)
 	{
 	case 0:
 		return PL_UP_FIRST_Y;

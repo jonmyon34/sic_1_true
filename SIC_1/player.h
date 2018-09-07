@@ -22,6 +22,8 @@
 
 bool checkHitPosY(int, int, int, int);
 bool checkHitBlock(int, int);
+int direction_pl_pos_x(int);
+int direction_pl_pos_y(int);
 
 
 class player
@@ -43,6 +45,7 @@ public:
 	bool invincibleFlg;
 
 	int player_gh;
+	int player_gh_death;
 
 	int flashCnt;
 	int acceleCnt;
@@ -71,6 +74,7 @@ public:
 
 
 		player_gh = LoadGraph("player1.png");
+		player_gh_death = LoadGraph("Pl_ps.png");
 
 		flashCnt = 0;
 		acceleCnt = 0;
@@ -153,29 +157,36 @@ public:
 
 	void View()
 	{
-		switch (damageFlg)
+		if (hp > 0)
 		{
-		case false:
-		DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
-		break;
-
-		case true:
-			if (((flashCnt / 10) % 2)&&flashCnt<FLASHCNT_MAX)
+			switch (damageFlg)
 			{
+			case false:
 				DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
-				flashCnt++;
-			}
-			else if (flashCnt >= FLASHCNT_MAX)
-			{
-				damageFlg = false;
-				invincibleFlg = false;
-				flashCnt = 0;
-			}
-			else
-			{
-				flashCnt++;
-			}
+				break;
 
+			case true:
+				if (((flashCnt / 10) % 2) && flashCnt < FLASHCNT_MAX)
+				{
+					DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					flashCnt++;
+				}
+				else if (flashCnt >= FLASHCNT_MAX)
+				{
+					damageFlg = false;
+					invincibleFlg = false;
+					flashCnt = 0;
+				}
+				else
+				{
+					flashCnt++;
+				}
+
+			}
+		}
+		else
+		{
+			DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh_death, true, false);
 		}
 	}
 
@@ -198,6 +209,12 @@ public:
 		//	acceleration--;
 		//	invincibleFlg = true;
 		//}
+	}
+
+	void Direction()
+	{
+		pos_x = direction_pl_pos_x(directionMode);
+		pos_y = direction_pl_pos_y(directionMode);
 	}
 
 	void All()

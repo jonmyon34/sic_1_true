@@ -1,6 +1,9 @@
 #define BLOCK_WIDTH 16
 #define BLOCK_HEIGHT 16
 
+#define BLOCK_RISE_MODE 0
+#define BLOCK_FALL_MODE 2
+
 int getBlockRandPos_x();
 int getBlockRandValue();
 int getBlockNo(int, int);
@@ -18,7 +21,7 @@ public:
 	int blockRandFirst;
 	int blockRandSecond;
 
-	int nextBlockMergin;
+	int nextBlockMargin;
 
 	int blockNumber;
 
@@ -35,6 +38,8 @@ public:
 	bool blockExistFlg;
 
 	int blockExistMode;
+	int directionMode;
+
 	bool blockFlg;
 
 	block()
@@ -56,24 +61,33 @@ public:
 
 		blockNumber = getBlockNo(blockRandFirst, blockRandSecond);
 		blockExistMode = blockNumber;
+		directionMode = 0;
 
-		nextBlockMergin = 0;
+		nextBlockMargin = 0;
 
 		blockExistFlg = false;
 
 		blockFlg = false;
 	}
 
-	void ReStart()
-	{
-		pos_x = WINDOW_X / 2;
-		pos_y = WINDOW_Y;
-	}
-
 	void GetPos()
 	{
 		pos_x = getBlockRandPos_x();
-		pos_y = WINDOW_Y;
+
+		switch (directionMode)
+		{
+		case BLOCK_RISE_MODE:
+			pos_y = WINDOW_Y;
+			break;
+
+		case BLOCK_FALL_MODE:
+			pos_y = 0;
+			break;
+
+		default:
+			pos_y = WINDOW_Y;
+			break;
+		}
 
 		blockRandFirst = getBlockRandValue();
 		blockRandSecond = getBlockRandValue();
@@ -86,7 +100,7 @@ public:
 	void Move()
 	{
 		pos_y = pos_y - speed;
-		nextBlockMergin -= speed;
+		nextBlockMargin -= speed;
 	}
 
 	void ExistCheck()
@@ -99,7 +113,7 @@ public:
 
 	void View()
 	{
-		
+
 		for (int i = 0; i < blockNumber; i++)
 		{
 			if (blockNumber - blockExistMode <= i)

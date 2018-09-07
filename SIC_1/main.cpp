@@ -59,14 +59,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		//縦の状況の当たり判定
-		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMergin <= 0)
+		//全体的に気持ち悪すぎるし時間あれば修正
+		if (checkHitPosY(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0)
 		{
 			if (checkHitBlock(pl->pos_x, bl->pos_x))
 			{
 				pl->hitFlg = true;
-				bl->nextBlockMergin = pl->pos_y - bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT);
-				pl->acceleration--;
-				bl->blockExistMode--;
+				bl->nextBlockMargin = pl->pos_y - (bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT));
+				if (bl->blockExistMode > 0)
+				{
+					bl->blockExistMode--;
+					pl->acceleration--;
+				}
+
+				if (pl->acceleration <= 0)
+				{
+					pl->hp--;
+					pl->damageFlg = true;
+				}
 			}
 		}
 
@@ -105,6 +115,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		pl->All();
+
+		if (pl->hitFlg && pl->pos_y < bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT) && !pl->invincibleFlg)
+		{
+			pl->invincibleFlg = true;
+		}
+		else if (pl->invincibleFlg && !pl->damageFlg)
+		{
+			pl->invincibleFlg = false;
+		}
+
+
+
+		//位置変更
+		if (CheckHitKey(KEY_INPUT_0))
+		{
+			pl->directionMode = 0;
+			pl->Direction();
+		}
+
+		if (CheckHitKey(KEY_INPUT_2))
+		{
+			pl->directionMode = 2;
+			pl->Direction();
+		}
 
 		ScreenFlip();
 		ClearDrawScreen();
