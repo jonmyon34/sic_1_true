@@ -4,6 +4,8 @@
 #define PL_SPEED_MAX 9
 #define PL_SPEED_INC 0.2
 
+#define PL_RIGHTSIDE_MODE 1
+#define PL_LEFTSIDE_MODE 3
 
 //Œü‚«‚É‘Î‚µ‚Ä‚Ì‰ŠúˆÊ’u
 #define PL_UP_FIRST_X WINDOW_X/2
@@ -211,6 +213,7 @@ public:
 		}
 		else
 		{
+			//€–S‚Ş[‚Ô
 			DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh_death, true, false);
 		}
 	}

@@ -1,3 +1,5 @@
+#pragma once
+
 #include"DxLib.h"
 
 #include<stdlib.h>
@@ -19,4 +21,5 @@
 
 
 #include"player.h"
+#include "back.h"
 #include"block.h"

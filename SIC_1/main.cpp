@@ -8,14 +8,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	player *pl = new player();
+	player ppl;
 	block *bl = new block();
+	back *bk = new back();
 
 	bool spaceFlg = false;
-	int testback;
+	int testback_1;
+	int testback_2;
 	double rad = 0;
 	int rad_rand;
-	testback = LoadGraph("SIC_1_back_test1.png");
+	player backscroll;
 
+	testback_1 = LoadGraph("SIC_1_back_test1.png");
+	testback_2 = LoadGraph("SIC1_back_test2.png");
 
 	SetFontSize(128);
 	int color = GetColor(0, 155, 250);
@@ -27,8 +32,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	while (ProcessMessage() != -1)
 	{
-		DrawRotaGraph(WINDOW_X / 2, WINDOW_Y / 2, 1.0, rad, testback, true, false);
+		switch (pl->directionMode)
+		{
+		case BLOCK_RISE_MODE:
+		case BLOCK_FALL_MODE:
+			DrawRotaGraph(WINDOW_X / 2, WINDOW_Y / 2, 1.0, rad, testback_1, true, false);
+			break;
 
+		case PL_RIGHTSIDE_MODE:
+		case PL_LEFTSIDE_MODE:
+			DrawRotaGraph(WINDOW_X / 2, WINDOW_Y / 2, 1.0, rad, testback_2, true, false);
+			break;
+
+		default:
+			break;
+		}
+
+		//backscroll.acceleration = pl->acceleration;
+		//bk->All(backscroll);
+		
 
 		printfDx("%d", pl->acceleration);
 
@@ -86,7 +108,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 
 		case BLOCK_FALL_MODE:
-			if (check_hit_pos_y_fall(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0)
+			if (check_hit_pos_y_fall(pl->pos_y, bl->pos_y, bl->blockNumber, bl->blockExistMode) && !pl->invincibleFlg && bl->nextBlockMargin <= 0 && !pl->damageFlg)
 			{
 				if (checkHitBlock(pl->pos_x, bl->pos_x))
 				{
@@ -100,6 +122,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					if (pl->acceleration <= 0)
 					{
+						pl->acceleration = 0;
 						pl->hp--;
 						pl->damageFlg = true;
 					}
@@ -218,12 +241,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pl->directionMode = BLOCK_RISE_MODE;
 			bl->directionMode = BLOCK_RISE_MODE;
 			pl->Direction();
+			bl->GetPos();
+		}
+
+		if (CheckHitKey(KEY_INPUT_1))
+		{
+			pl->directionMode = PL_RIGHTSIDE_MODE;
+			pl->Direction();
 		}
 
 		if (CheckHitKey(KEY_INPUT_2))
 		{
 			pl->directionMode = BLOCK_FALL_MODE;
 			bl->directionMode = BLOCK_FALL_MODE;
+			pl->Direction();
+			bl->GetPos();
+		}
+
+		if (CheckHitKey(KEY_INPUT_3))
+		{
+			pl->directionMode = PL_LEFTSIDE_MODE;
 			pl->Direction();
 		}
 
@@ -234,6 +271,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	delete pl;
 	delete bl;
+	delete bk;
 
 
 	DxLib_End();

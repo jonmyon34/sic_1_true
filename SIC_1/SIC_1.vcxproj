@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="back.cpp" />
     <ClCompile Include="block.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="main.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all.h" />
+    <ClInclude Include="back.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>
