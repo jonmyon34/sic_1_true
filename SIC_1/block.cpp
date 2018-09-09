@@ -28,16 +28,14 @@ int getBlockNo(int first, int second)
 
 	case 8:
 	case 9:
-		return 4;
-
 	case 10:
+		return 4;
 	case 11:
+	case 12:
 		return 5;
 
-	case 12:
-		return 6;
 
 	default:
-		return 6;
+		return 5;
 	}
 }

@@ -18,18 +18,18 @@ bool check_hit_pos_y_fall(int pl_pos_y, int bl_pos_y, int blockNumber, int block
 	return false;
 }
 
-bool check_hit_pos_x_goright(int pl_pos_x,int bl_pos_x)
+bool check_hit_pos_x_goright(int pl_pos_x,int ob_pos_x)
 {
-	if (pl_pos_x + PL_WIDTH >= bl_pos_x && pl_pos_x <= bl_pos_x + BLOCK_WIDTH)
+	if (pl_pos_x + PL_WIDTH >= ob_pos_x && pl_pos_x <= ob_pos_x + BLOCK_WIDTH)
 	{
 		return true;
 	}
 	return false;
 }
 
-bool check_hit_pos_x_goleft(int pl_pos_x, int bl_pos_y)
+bool check_hit_pos_x_goleft(int pl_pos_x, int ob_pos_y)
 {
-	if (pl_pos_x <= bl_pos_y + BLOCK_WIDTH && pl_pos_x + PL_WIDTH >= bl_pos_y)
+	if (pl_pos_x <= ob_pos_y + BLOCK_WIDTH && pl_pos_x + PL_WIDTH >= ob_pos_y)
 	{
 		return true;
 	}
@@ -46,19 +46,35 @@ bool checkHitBlock(int pl_pos_x, int bl_pos_x)
 	return false;
 }
 
-void checkBreakBlock(int blNumber,int acceleration)
+bool checkHitObsacle(int pl_pos_y, int ob_pos_y)
 {
-
-}
-
-bool checkHitStop(int acceleration, int block)
-{
-	if (acceleration == 0 && block == true)
+	if (pl_pos_y + PL_HEIGHT > ob_pos_y && ob_pos_y + OBSTACLE_HEIGHT > pl_pos_y)
 	{
 		return true;
 	}
 
 	return false;
+}
+
+void checkBreakBlock(int blNumber,int acceleration)
+{
+
+}
+
+int checkHitStop(int blockNumber, int blockExistMode)
+{
+	if (blockNumber - blockExistMode == 1)
+	{
+		return PL_HITSTOP_VAL;
+	}
+	else if (blockNumber - blockExistMode == 2)
+	{
+		return PL_HITSTOP_VAL / 2;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void checkHitEnemy()

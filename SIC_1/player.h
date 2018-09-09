@@ -25,9 +25,16 @@
 
 #define PL_MAX_ACCELERATION 6
 
+#define PL_HITSTOP_VAL 6
+
+
 bool check_hit_pos_y_rise(int, int, int, int);
 bool check_hit_pos_y_fall(int, int, int, int);
+bool check_hit_pos_x_goright(int, int);
+bool check_hit_pos_x_goleft(int, int);
 bool checkHitBlock(int, int);
+bool checkHitObsacle(int, int);
+int checkHitStop(int, int);
 int direction_pl_pos_x(int);
 int direction_pl_pos_y(int);
 
@@ -58,6 +65,7 @@ public:
 	int flashCnt;
 	int acceleCnt;
 	int animCnt;
+	int hitstopCnt;
 
 	bool plLiveFlg;
 
@@ -91,6 +99,7 @@ public:
 		flashCnt = 0;
 		acceleCnt = 0;
 		animCnt = 0;
+		hitstopCnt = 0;
 
 	}
 

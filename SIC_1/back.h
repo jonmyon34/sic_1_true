@@ -1,21 +1,41 @@
 #pragma once
 #include "all.h"
 #define SCROLL_SPEED 2
-#define BACKSIDE_MARGIN  250 //âÊñ ÇÃç∂âEïùí≤êÆ
+#define DOORPOS_Y 445
 
 class back
 {
 public:
-	int y;
+	int x, y;
+	double fx, fy;
 	int scrollspeedsetter;
-	int back_gh;
+	int playback_gh, titleback_gh;
+	int playbackside_gh[2];
+	int door_gh;
+
+	int anim_x;
+	int animCnt;
+
+	bool doorFlg;
+
 	back()
 	{
+		x = 0;
+		fx = 0;
 		y = 0;
+		fy = 0;
 		scrollspeedsetter = 0;
-		back_gh = LoadGraph("Data/Image/BG1.png");
+		anim_x = 0;
+		animCnt = 0;
+		doorFlg = false;
+		titleback_gh = LoadGraph("Data/Image/SIC_1_back_test1.png");
+		LoadDivGraph("Data/Image/BG3.png", 2, 2, 1, 112, 96, playbackside_gh);
+		playback_gh = LoadGraph("Data/Image/BG1.png");
+		door_gh = LoadGraph("Data/Image/door.png");
 	}
-	void Draw();
+	void Drawback(scene, player);
+	void Drawbackfront(scene, player);
+	void Drawdoor();
 	void Move(player);
-	void All(player);
+	void All(scene, player);
 };

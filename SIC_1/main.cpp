@@ -27,7 +27,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int testback_2;
 	double rad = 0;
 	int rad_rand;
-	player backscroll;
 
 	testback_1 = LoadGraph("Data/Image/SIC_1_back_test1.png");
 	testback_2 = LoadGraph("Data/Image/SIC1_back_test2.png");
@@ -78,9 +77,57 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
+		//位置変更
+		if (CheckHitKey(KEY_INPUT_0))
+		{
+			pl->directionMode = BLOCK_RISE_MODE;
+			bl->directionMode = BLOCK_RISE_MODE;
+			bk->y = 0;
+			pl->Direction();
+			bl->GetPos();
+		}
+
+		if (CheckHitKey(KEY_INPUT_1))
+		{
+			pl->directionMode = PL_RIGHTSIDE_MODE;
+			bk->fx = 0;
+			bk->x = 0;
+			pl->Direction();
+		}
+
+		if (CheckHitKey(KEY_INPUT_2))
+		{
+			pl->directionMode = BLOCK_FALL_MODE;
+			bl->directionMode = BLOCK_FALL_MODE;
+			bk->y = 0;
+			pl->Direction();
+			bl->GetPos();
+		}
+
+		if (CheckHitKey(KEY_INPUT_3))
+		{
+			pl->directionMode = PL_LEFTSIDE_MODE;
+			bk->fx = 0;
+			bk->x = 0;
+			pl->Direction();
+		}
+
+		if (se->playmode == TITLE&&pl->pos_x >= 800)
+		{
+			doplaymode(se);
+		}
+
+		if (se->playmode == PLAY)
+		{
+			pl->All();
+			bk->All(*se, *pl);
+		}
+
+
+
 		//背景
 		//まだループしてないのでループさせる
-		//bk->All(*pl);
+		bk->All(*se, *pl);
 		
 
 		printfDx("%d", pl->acceleration);
@@ -124,6 +171,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = true;
 		}
 
+		if (pl->hitstopCnt > 0)
+		{
+			bl->speed = 0;
+		}
+		else
+		{
+			bl->speed = 12;
+		}
+
+		pl->hitstopCnt--;
+
 		//縦の当たり判定
 		//全体的に気持ち悪すぎるしなんでここに書いてんの？時間あれば修正
 		switch (pl->directionMode)
@@ -139,6 +197,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					{
 						bl->blockExistMode--;
 						pl->acceleration--;
+
+						pl->hitstopCnt = checkHitStop(bl->blockNumber, bl->blockExistMode);
+
 					}
 
 					if (pl->acceleration <= 0)
@@ -146,6 +207,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						pl->hp--;
 						pl->damageFlg = true;
 					}
+
 				}
 			}
 			break;
@@ -161,6 +223,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					{
 						bl->blockExistMode--;
 						pl->acceleration--;
+
+						pl->hitstopCnt = checkHitStop(bl->blockNumber, bl->blockExistMode);
+
 					}
 
 					if (pl->acceleration <= 0)
@@ -172,6 +237,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 			}
 			break;
+
+		case PL_RIGHTSIDE_MODE:
+			if (check_hit_pos_x_goright(pl->pos_x, ob->pos_x) && !pl->damageFlg)
+			{
+				if (checkHitObsacle(pl->pos_y, ob->pos_y))
+				{
+					pl->damageFlg = true;
+					pl->hp--;
+				}
+			}
 
 
 		default:
@@ -270,6 +345,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		pl->All();
+		bk->Drawbackfront(*se, *pl);
 
 
 		//動いた前後とかの関係で二回やると今のところちょうどいいけど、もしかしたらどうにかなるかもしれないし、あるいはどうにもならないかもしれない
@@ -304,34 +380,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 
-		//位置変更
-		if (CheckHitKey(KEY_INPUT_0))
-		{
-			pl->directionMode = BLOCK_RISE_MODE;
-			bl->directionMode = BLOCK_RISE_MODE;
-			pl->Direction();
-			bl->GetPos();
-		}
-
-		if (CheckHitKey(KEY_INPUT_1))
-		{
-			pl->directionMode = PL_RIGHTSIDE_MODE;
-			pl->Direction();
-		}
-
-		if (CheckHitKey(KEY_INPUT_2))
-		{
-			pl->directionMode = BLOCK_FALL_MODE;
-			bl->directionMode = BLOCK_FALL_MODE;
-			pl->Direction();
-			bl->GetPos();
-		}
-
-		if (CheckHitKey(KEY_INPUT_3))
-		{
-			pl->directionMode = PL_LEFTSIDE_MODE;
-			pl->Direction();
-		}
 
 		//仮画面を描画
 		SetDrawScreen(DX_SCREEN_BACK);
