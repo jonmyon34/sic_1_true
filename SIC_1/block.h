@@ -1,9 +1,12 @@
 #define BLOCK_WIDTH 16
 #define BLOCK_HEIGHT 16
 
+#define BLOCK_SPEED 12
+
 int getBlockRandPos_x();
 int getBlockRandValue();
 int getBlockNo(int, int);
+
 
 class block
 {
@@ -38,7 +41,7 @@ public:
 		width = BLOCK_WIDTH;
 		height = BLOCK_HEIGHT;
 
-		speed = 12;
+		speed = BLOCK_SPEED;
 
 		block_gh = LoadGraph("Data/Image/chip1.png");
 
@@ -113,6 +116,7 @@ public:
 		}
 	}
 
+
 	void View()
 	{
 
@@ -141,3 +145,4 @@ public:
 
 };
 
+void HitStop(block&, player&);

@@ -27,6 +27,10 @@
 
 #define PL_HITSTOP_VAL 6
 
+#define EXPLOSIVE_POWER 15
+#define EXPLOSION_MARGIN 17
+#define PL_PARTS_START 63
+
 
 bool check_hit_pos_y_rise(int, int, int, int);
 bool check_hit_pos_y_fall(int, int, int, int);
@@ -47,6 +51,8 @@ public:
 	int fallVelocity;
 	int acceleration;
 
+	int accelerationTmp;
+
 	int hp;
 
 	int item;
@@ -62,12 +68,27 @@ public:
 	int player_gh;
 	int player_gh_death;
 
+	//Ž€–SŽžŠÖ˜A
+
+	int exp_gh;
+
+	int player_gh_parts[18 * 6];
+	int expCnt;
+	int parts_x[9] = { 0 };
+	double parts_y[9] = { 0 };
+	bool expFlg[9] = { 0 };
+	double y_temp[9] = { 0 };
+	double y_prev[9] = { 0 };
+	int exp_x;
+	int rngvalue[9];
+
 	int flashCnt;
 	int acceleCnt;
 	int animCnt;
 	int hitstopCnt;
 
 	bool plLiveFlg;
+	bool hitstopFlg;
 
 	player()
 	{
@@ -81,6 +102,8 @@ public:
 		speed = 0;
 		acceleration = 1;
 
+		accelerationTmp = 1;
+
 		hp = 3;
 
 		hitFlg = false;
@@ -88,10 +111,18 @@ public:
 		directionMode = 0;
 		invincibleFlg = false;
 
+		hitstopFlg = false;
+
+		for (int i = 0; i < 9; i++)
+		{
+			rngvalue[i] = rand() % 4 * 3;
+		}
+
 
 
 		player_gh = LoadGraph("Data/Image/player1.png");
 		player_gh_death = LoadGraph("Data/Image/Pl_ps.png");
+		exp_gh = LoadGraph("Data/Image/effect1.png");
 
 		anim_x = 0;
 		anim_y = 0;
@@ -100,6 +131,9 @@ public:
 		acceleCnt = 0;
 		animCnt = 0;
 		hitstopCnt = 0;
+
+		expCnt = 0;
+		exp_x = 0;
 
 	}
 
@@ -228,7 +262,35 @@ public:
 		else
 		{
 			//Ž€–S‚Þ[‚Ô
-			DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh_death, true, false);
+			LoadDivGraph("Data/Image/player1.png", 18 * 6, 18, 6, PL_WIDTH, PL_HEIGHT, player_gh_parts);
+			DrawRectGraph(pos_x - EXPLOSION_MARGIN, pos_y - EXPLOSION_MARGIN, exp_x * 64, 0, 64, 64, exp_gh, true);
+			expCnt++;
+			exp_x = expCnt / 3;
+			for (int i = 0; i < 9; i++)
+			{
+				switch (i % 2)
+				{
+				case 1:
+					parts_x[i] += expCnt / 20;
+					break;
+				case 0:
+					parts_x[i] -= expCnt / 20;
+					break;
+				}
+				if (expFlg[i] == false)
+				{
+					y_prev[i] = parts_y[i];
+					parts_y[i] = parts_y[i] - (rngvalue[i]);//EXPLOSIVE_POWER
+					expFlg[i] = true;
+				}
+				else
+				{
+					y_temp[i] = parts_y[i];
+					parts_y[i] += (parts_y[i] - y_prev[i]) + 0.35;
+					y_prev[i] = y_temp[i];
+				}
+				DrawGraph(pos_x + parts_x[i], pos_y + parts_y[i], player_gh_parts[PL_PARTS_START + i], true);
+			}
 		}
 	}
 

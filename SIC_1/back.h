@@ -10,13 +10,13 @@ public:
 	double fx, fy;
 	int scrollspeedsetter;
 	int playback_gh, titleback_gh;
-	int playbackside_gh[2];
+	int playbackside_gh[2];//[0]が遠景[1]が近景
 	int door_gh;
 
 	int anim_x;
 	int animCnt;
 
-	bool doorFlg;
+	bool doorFlg;//ドア開けるフラグ
 
 	back()
 	{

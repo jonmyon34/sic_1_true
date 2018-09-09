@@ -112,6 +112,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pl->Direction();
 		}
 
+		if (CheckHitKey(KEY_INPUT_7))
+		{
+			pl->hp = 0;
+		}
+
 		if (se->playmode == TITLE&&pl->pos_x >= 800)
 		{
 			doplaymode(se);
@@ -129,6 +134,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//まだループしてないのでループさせる
 		bk->All(*se, *pl);
 		
+		HitStop(*bl, *pl);
+
+		pl->hitstopCnt--;
+
 
 		printfDx("%d", pl->acceleration);
 
@@ -171,16 +180,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = true;
 		}
 
-		if (pl->hitstopCnt > 0)
-		{
-			bl->speed = 0;
-		}
-		else
-		{
-			bl->speed = 12;
-		}
-
-		pl->hitstopCnt--;
 
 		//縦の当たり判定
 		//全体的に気持ち悪すぎるしなんでここに書いてんの？時間あれば修正
@@ -202,7 +201,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					}
 
-					if (pl->acceleration <= 0)
+					if (pl->acceleration <= 0 && pl->hitstopFlg)
 					{
 						pl->hp--;
 						pl->damageFlg = true;
@@ -228,7 +227,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					}
 
-					if (pl->acceleration <= 0)
+					if (pl->acceleration <= 0 && pl->hitstopFlg)
 					{
 						pl->acceleration = 0;
 						pl->hp--;
@@ -282,6 +281,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 		}
+
 
 		//障害物フラグ管理
 		if (ob->obstacleFlg)

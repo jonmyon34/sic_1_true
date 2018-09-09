@@ -1,5 +1,19 @@
 #include"all.h"
 
+void HitStop(block &bl, player &pl)
+{
+	if (pl.hitstopCnt > 0)
+	{
+		bl.speed = 0;
+		pl.hitstopFlg = true;
+	}
+	else if(pl.hitstopFlg)
+	{
+		bl.speed = BLOCK_SPEED;
+		pl.hitstopFlg = false;
+	}
+}
+
 int getBlockRandPos_x()
 {
 	return EXIST_MIN_FALL_RANGE_X + rand() % (EXIST_MAX_FALL_RANGE_X - (EXIST_MIN_FALL_RANGE_X - 1));
@@ -39,3 +53,4 @@ int getBlockNo(int first, int second)
 		return 5;
 	}
 }
+
