@@ -25,7 +25,7 @@
 
 #define PL_MAX_ACCELERATION 6
 
-#define PL_HITSTOP_VAL 6
+#define PL_HITSTOP_VAL 12
 
 #define EXPLOSIVE_POWER 15
 #define EXPLOSION_MARGIN 17
@@ -262,10 +262,13 @@ public:
 		else
 		{
 			//éÄñSÇﬁÅ[Ç‘
+
 			LoadDivGraph("Data/Image/player1.png", 18 * 6, 18, 6, PL_WIDTH, PL_HEIGHT, player_gh_parts);
 			DrawRectGraph(pos_x - EXPLOSION_MARGIN, pos_y - EXPLOSION_MARGIN, exp_x * 64, 0, 64, 64, exp_gh, true);
+
 			expCnt++;
 			exp_x = expCnt / 3;
+
 			for (int i = 0; i < 9; i++)
 			{
 				switch (i % 2)
@@ -273,11 +276,14 @@ public:
 				case 1:
 					parts_x[i] += expCnt / 20;
 					break;
+
 				case 0:
 					parts_x[i] -= expCnt / 20;
 					break;
 				}
+
 				if (expFlg[i] == false)
+
 				{
 					y_prev[i] = parts_y[i];
 					parts_y[i] = parts_y[i] - (rngvalue[i]);//EXPLOSIVE_POWER
@@ -289,7 +295,7 @@ public:
 					parts_y[i] += (parts_y[i] - y_prev[i]) + 0.35;
 					y_prev[i] = y_temp[i];
 				}
-				DrawGraph(pos_x + parts_x[i], pos_y + parts_y[i], player_gh_parts[PL_PARTS_START + i], true);
+				DrawRotaGraph(pos_x + parts_x[i], pos_y + parts_y[i], 1, expCnt / 3, player_gh_parts[PL_PARTS_START + i], true);
 			}
 		}
 	}

@@ -67,14 +67,19 @@ int checkHitStop(int blockNumber, int blockExistMode)
 	{
 		return PL_HITSTOP_VAL;
 	}
-	else if (blockNumber - blockExistMode == 2)
+	else //if (blockNumber - blockExistMode == 2)
 	{
 		return PL_HITSTOP_VAL / 2;
 	}
-	else
-	{
-		return false;
-	}
+
+	//else if (blockNumber - blockExistMode == 3)
+	//{
+	//	return PL_HITSTOP_VAL / 4;
+	//}
+	//else
+	//{
+	//	return PL_HITSTOP_VAL / 6;
+	//}
 }
 
 void checkHitEnemy()

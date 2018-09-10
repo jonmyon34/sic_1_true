@@ -6,9 +6,9 @@
 #include<time.h>
 
 
-#define WINDOW_X 1280
+#define WINDOW_X 384//1280
 //384が仕様
-#define WINDOW_Y 736
+#define WINDOW_Y 216//736
 //216が仕様
 #define MAX_WINDOW_EXTEND_RATE 5
 

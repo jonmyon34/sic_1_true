@@ -129,17 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 
-
-		//背景
-		//まだループしてないのでループさせる
-		bk->All(*se, *pl);
-		
-		HitStop(*bl, *pl);
-
-		pl->hitstopCnt--;
-
-
-		printfDx("%d", pl->acceleration);
+		printfDx("%d", bk->scrollspeedsetter);
 
 		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1)
 		{
@@ -201,7 +191,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					}
 
-					if (pl->acceleration <= 0 && pl->hitstopFlg)
+					if (pl->acceleration <= 0)
 					{
 						pl->hp--;
 						pl->damageFlg = true;
@@ -227,7 +217,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					}
 
-					if (pl->acceleration <= 0 && pl->hitstopFlg)
+					if (pl->acceleration <= 0 )
 					{
 						pl->acceleration = 0;
 						pl->hp--;
@@ -251,6 +241,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		default:
 			break;
 		}
+
+		//背景
+		HitStop(*bl, *pl);
+
+		if (pl->hitstopFlg)
+		{
+			bk->HitStop(*se, *pl);
+		}
+		else
+		{
+			if (bk->scrollspeed < SCROLL_SPEED)
+			{
+				bk->scrollspeed = SCROLL_SPEED;
+			}
+			bk->All(*se, *pl);
+		}
+
+		pl->hitstopCnt--;
+
 
 
 		//ブロックフラグ管理

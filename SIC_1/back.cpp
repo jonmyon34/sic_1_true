@@ -32,7 +32,7 @@ void back::Drawback(scene se, player pl)
 				playback_gh, false);
 			if (CheckHitKey(KEY_INPUT_4))doorFlg = true;
 			Drawdoor();
-			y -= /*SCROLL_SPEED + scrollspeedsetter;*/5;//テスト用変更
+			y -= /*scrollspeed + scrollspeedsetter;*/1;//テスト用変更
 			break;
 		case 2://上から下
 			if (y > WINDOW_Y)y = 0;
@@ -49,7 +49,7 @@ void back::Drawback(scene se, player pl)
 				0 + BACKSIDE_MARGIN, y,
 				playback_gh, false);
 			Drawdoor();
-			y += SCROLL_SPEED + scrollspeedsetter;
+			y += scrollspeed + scrollspeedsetter;
 			break;
 		case 1://左から右
 			if (x > WINDOW_X)x = 0;
@@ -163,11 +163,21 @@ void back::Move(player pl)
 	case 3:
 		scrollspeedsetter = 3;
 		break;
+	default:
+		scrollspeedsetter = 3;
+		break;
 	}
 }
 
 void back::All(scene se, player pl)
 {
-	Drawback(se, pl);
 	Move(pl);
+	Drawback(se, pl);
+}
+
+void back::HitStop(scene se, player pl)
+{
+	scrollspeed = 0;
+	scrollspeedsetter = 0;
+	Drawback(se, pl);
 }

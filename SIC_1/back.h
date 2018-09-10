@@ -8,6 +8,7 @@ class back
 public:
 	int x, y;
 	double fx, fy;
+	int scrollspeed;
 	int scrollspeedsetter;
 	int playback_gh, titleback_gh;
 	int playbackside_gh[2];//[0]‚ª‰“Œi[1]‚ª‹ßŒi
@@ -24,6 +25,7 @@ public:
 		fx = 0;
 		y = 0;
 		fy = 0;
+		scrollspeed = SCROLL_SPEED;
 		scrollspeedsetter = 0;
 		anim_x = 0;
 		animCnt = 0;
@@ -38,4 +40,5 @@ public:
 	void Drawdoor();
 	void Move(player);
 	void All(scene, player);
+	void HitStop(scene, player);
 };

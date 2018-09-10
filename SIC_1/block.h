@@ -1,7 +1,7 @@
 #define BLOCK_WIDTH 16
 #define BLOCK_HEIGHT 16
 
-#define BLOCK_SPEED 12
+#define BLOCK_SPEED 6
 
 int getBlockRandPos_x();
 int getBlockRandValue();
