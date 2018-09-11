@@ -149,6 +149,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pl->All(*se);
 			bk->Drawbackfront(*se, *pl);
 			se->Overmode(se);
+			if (se->retryFlg == true)//‘S‚Ä‰Šú‰»‚·‚é
+			{
+				pl->hp = 3;
+				for (int i = 0; i < 9; i++)
+				{
+					pl->parts_x[i] = 0;
+					pl->parts_y[i] = 0;
+					pl->y_prev[i] = 0;
+					pl->expFlg[i] = false;
+				}
+				pl->expCnt = 0;
+				se->overselect = 0;
+				doplaymode(se);
+				se->retryFlg = false;
+			}
+
 		}
 
 

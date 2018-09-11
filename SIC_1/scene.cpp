@@ -52,10 +52,12 @@ void scene::Overselect(scene *se)
 
 	if (overselect == 1 && CheckHitKey(KEY_INPUT_RETURN))
 	{
+		overselect = 0;
 		dotitlemode(se);
 	}
 	if (overselect == 2 && CheckHitKey(KEY_INPUT_RETURN))
 	{
-		doplaymode(se);
+		overselect = 0;
+		retryFlg = true;
 	}
 }

@@ -8,6 +8,7 @@ public:
 	int playmode;
 	int over_gh, over_gh_title, over_gh_retry;
 	int overselect;
+	bool retryFlg;
 	scene()
 	{
 		playmode = TITLE;
