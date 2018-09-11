@@ -46,7 +46,7 @@ bool checkHitBlock(int pl_pos_x, int bl_pos_x)
 	return false;
 }
 
-bool checkHitObsacle(int pl_pos_y, int ob_pos_y)
+bool checkHitObstacle(int pl_pos_y, int ob_pos_y)
 {
 	if (pl_pos_y + PL_HEIGHT > ob_pos_y && ob_pos_y + OBSTACLE_HEIGHT > pl_pos_y)
 	{
@@ -134,7 +134,12 @@ int direction_pl_pos_y(int directionMode)
 }
 
 
-void invincible()
+int getChangeDirectionModeLimit(int first, int second, int third, int fourth)
 {
+	first = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	second = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	third = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	fourth = rand() % (BLOCK_SPAWN_LIMIT / 4);
 
+	return DIRECTION_CHANGE_MIN_RANGE + (first + second + third + fourth);
 }

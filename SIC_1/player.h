@@ -31,16 +31,20 @@
 #define EXPLOSION_MARGIN 17
 #define PL_PARTS_START 63
 
+#define ACCELE_INC_TIME 60
+
 
 bool check_hit_pos_y_rise(int, int, int, int);
 bool check_hit_pos_y_fall(int, int, int, int);
 bool check_hit_pos_x_goright(int, int);
 bool check_hit_pos_x_goleft(int, int);
 bool checkHitBlock(int, int);
-bool checkHitObsacle(int, int);
+bool checkHitObstacle(int, int);
 int checkHitStop(int, int);
 int direction_pl_pos_x(int);
 int direction_pl_pos_y(int);
+
+int getChangeDirectionModeLimit(int, int, int, int);
 
 
 class player
@@ -61,11 +65,17 @@ public:
 
 	bool hitFlg;
 	bool damageFlg;
+	bool changeDirectionModeFlg;
+	bool changeDirectionStartFlg;
 
 	int directionMode;
+	int changeDirectionMode;
+	int changeDirectionModeCnt;
+	int changeDirectionModeLimit;
 	bool invincibleFlg;
 
 	int player_gh;
+	int player_UP_gh;
 	int player_gh_death;
 
 	//Ž€–SŽžŠÖ˜A
@@ -90,6 +100,8 @@ public:
 	bool plLiveFlg;
 	bool hitstopFlg;
 
+	int first, second, third, fourth;
+
 	player()
 	{
 		x = WINDOW_X / 2;
@@ -108,7 +120,18 @@ public:
 
 		hitFlg = false;
 		damageFlg = false;
+		changeDirectionStartFlg = false;
+		changeDirectionModeFlg = false;
+
+		first = 0;
+		second = 0;
+		third = 0;
+		fourth = 0;
+
 		directionMode = 0;
+		changeDirectionMode = 0;
+		changeDirectionModeCnt = 0;
+		changeDirectionModeLimit = getChangeDirectionModeLimit(first, second, third, fourth);
 		invincibleFlg = false;
 
 		hitstopFlg = false;
@@ -121,6 +144,7 @@ public:
 
 
 		player_gh = LoadGraph("Data/Image/player1.png");
+		player_UP_gh = LoadGraph("Data/Image/player1_UP.png");
 		player_gh_death = LoadGraph("Data/Image/Pl_ps.png");
 		exp_gh = LoadGraph("Data/Image/effect1.png");
 
@@ -220,21 +244,59 @@ public:
 			switch (damageFlg)
 			{
 			case false:
-				if (acceleration == PL_MAX_ACCELERATION)
+				switch (directionMode)
 				{
+				case BLOCK_RISE_MODE:
+					if (acceleration == PL_MAX_ACCELERATION)
+					{
+						anim_x = (animCnt / 5) % 8;
+						anim_y = PL_HEIGHT;
+						animCnt++;
+						DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					}
+					else
+					{
+						anim_x = (animCnt / 5) % 5;
+						anim_y = 0;
+						animCnt++;
+						DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					}
+					break;
+
+				case PL_RIGHTSIDE_MODE:
 					anim_x = (animCnt / 5) % 8;
 					anim_y = PL_HEIGHT;
 					animCnt++;
 					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
-				}
-				else
-				{
-					anim_x = (animCnt / 5) % 5;
-					anim_y = 0;
+					break;
+
+				case BLOCK_FALL_MODE:
+					if (acceleration == PL_MAX_ACCELERATION)
+					{
+						anim_x = (animCnt / 5) % 8;
+						anim_y = PL_HEIGHT;
+						animCnt++;
+						DrawRectGraph(pos_x, pos_y, 503 - PL_WIDTH - (anim_x*PL_WIDTH), 167 - PL_HEIGHT * 2, PL_WIDTH, PL_HEIGHT, player_UP_gh, true, false);
+					}
+					else
+					{
+						anim_x = (animCnt / 5) % 5;
+						anim_y = 0;
+						animCnt++;
+						DrawRectGraph(pos_x, pos_y, 503 - PL_WIDTH - (anim_x*PL_WIDTH), 167 - PL_HEIGHT, PL_WIDTH, PL_HEIGHT, player_UP_gh, true, false);
+					}
+					break;
+
+				case PL_LEFTSIDE_MODE:
+					anim_x = (animCnt / 5) % 8;
+					anim_y = PL_HEIGHT;
 					animCnt++;
 					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
-				}
+					break;
 
+				default:
+					break;
+				}
 				break;
 
 			case true:
@@ -256,7 +318,7 @@ public:
 				{
 					flashCnt++;
 				}
-
+				break;
 			}
 		}
 		else
@@ -300,11 +362,16 @@ public:
 		}
 	}
 
+	void StopView()
+	{
+		DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+	}
+
 	void Accele()
 	{
 		if (acceleration < PL_MAX_ACCELERATION)
 		{
-			if (acceleCnt >= 120)
+			if (acceleCnt >= ACCELE_INC_TIME)
 			{
 				acceleration++;
 				acceleCnt = 0;

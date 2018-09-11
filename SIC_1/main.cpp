@@ -14,6 +14,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	SetWindowSize(WINDOW_X * windowSIze, WINDOW_Y * windowSIze);
 
+	srand((unsigned)time(NULL));
+
 
 	player *pl = new player();
 	player ppl;
@@ -21,6 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	back *bk = new back();
 	obstacle *ob = new obstacle();
 	scene *se = new scene();
+	ui *pui = new ui();
 
 	bool spaceFlg = false;
 	int testback_1;
@@ -36,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 
-	srand((unsigned)time(NULL));
+
 
 
 	while (ProcessMessage() != -1)
@@ -112,20 +115,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pl->Direction();
 		}
 
+		if (CheckHitKey(KEY_INPUT_5))
+		{
+			pl->changeDirectionStartFlg = true;
+		}
+
+		
+
 		if (CheckHitKey(KEY_INPUT_7))
 		{
 			pl->hp = 0;
 		}
 
-		if (se->playmode == TITLE&&pl->pos_x >= 800)
+		if (se->playmode == TITLE&&pl->pos_x >= 400)
 		{
 			doplaymode(se);
 		}
 
-		if (se->playmode == PLAY)
+		if (se->playmode == PLAY && !pl->changeDirectionModeFlg)
 		{
-			pl->All();
 			bk->All(*se, *pl);
+			pui->All();
 		}
 
 
@@ -138,37 +148,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			delete bk;
 			delete se;
 			delete ob;
+			delete pui;
+
+			DxLib_End();
 
 			exit(true);
-
 		}
 
 
 		if (CheckHitKey(KEY_INPUT_SPACE) && spaceFlg == false)
 		{
-			//初期位置調整
-			//pl->directionMode++;
-			//rad_rand = rand() % 4;
-			//rad = (DX_PI / 2)* rad_rand;
-			//pl->pos_x = direction_pl_pos_x(rad_rand);
-			//pl->pos_y = direction_pl_pos_y(rad_rand);
-
 			switch (pl->directionMode)
 			{
 			case BLOCK_RISE_MODE:
 			case BLOCK_FALL_MODE:
 				//ブロック
 				bl->blockFlg = true;
+				break;
 
 			case PL_RIGHTSIDE_MODE:
 			case PL_LEFTSIDE_MODE:
 				//横モードの障害物
 				ob->obstacleFlg = true;
+				break;
 			}
-
 
 			spaceFlg = true;
 		}
+
+		if (se->playmode == PLAY  && !pl->changeDirectionModeFlg)
+		{
+			bl->blockSpawnCnt++;
+		}
+
+		if (se->playmode == PLAY && !bl->blockFlg && bl->blockSpawnCnt == bl->blockSpawnLimit && !pl->changeDirectionModeFlg)
+		{
+			bl->blockFlg = true;
+		}
+
 
 
 		//縦の当たり判定
@@ -228,28 +245,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 
 		case PL_RIGHTSIDE_MODE:
-			if (check_hit_pos_x_goright(pl->pos_x, ob->pos_x) && !pl->damageFlg)
+			if (check_hit_pos_x_goright(pl->pos_x, ob->pos_x) && !pl->damageFlg && !pl->changeDirectionModeFlg)
 			{
-				if (checkHitObsacle(pl->pos_y, ob->pos_y))
+				if (checkHitObstacle(pl->pos_y, ob->pos_y))
 				{
 					pl->damageFlg = true;
 					pl->hp--;
 				}
 			}
+			break;
 
+		case PL_LEFTSIDE_MODE:
+			if (check_hit_pos_x_goleft(pl->pos_x, ob->pos_x) && !pl->damageFlg && !pl->changeDirectionModeFlg)
+			{
+				if (checkHitObstacle(pl->pos_x, ob->pos_x))
+				{
+					pl->damageFlg = true;
+					pl->hp--;
+				}
+			}
+			break;
 
 		default:
 			break;
 		}
 
-		//背景
-		HitStop(*bl, *pl);
+		if (!pl->changeDirectionModeFlg)
+		{
+			HitStop(*bl, *pl);
+		}
 
 		if (pl->hitstopFlg)
 		{
 			bk->HitStop(*se, *pl);
 		}
-		else
+		else if(!pl->changeDirectionModeFlg)
 		{
 			if (bk->scrollspeed < SCROLL_SPEED)
 			{
@@ -258,12 +288,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			bk->All(*se, *pl);
 		}
 
-		pl->hitstopCnt--;
+		if (se->playmode == PLAY&&!pl->changeDirectionModeFlg)
+		{
+			pl->hitstopCnt--;
+			pl->changeDirectionModeCnt++;
+		}
 
+		if (se->playmode == PLAY && pl->changeDirectionModeCnt == pl->changeDirectionModeLimit)
+		{
+			switch (pl->directionMode)
+			{
+			case BLOCK_RISE_MODE:
+			case BLOCK_FALL_MODE:
+				changeDirectionMode(*bk, *pl, *se);
+				if (!pl->changeDirectionModeFlg)
+				{
+					pl->Direction();
+				}
+				break;
+
+			case PL_RIGHTSIDE_MODE:
+			case PL_LEFTSIDE_MODE:
+				changeDirectionModeDown(*bk, *pl, *se);
+				if (!pl->changeDirectionModeFlg)
+				{
+					bl->blockSpawnCnt = -120;
+				}
+				break;
+			}
+		}
 
 
 		//ブロックフラグ管理
-		if (bl->blockFlg)
+		if (bl->blockFlg && pl->directionMode == BLOCK_RISE_MODE)
 		{
 			bl->Move();
 			bl->ExistCheck();
@@ -275,6 +332,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					bl->blockFlg = false;
 					bl->GetPos();
+					bl->blockSpawnCnt = 0;
+					bl->blockSpawnLimit = getBlockSpawnLimit(bl->first, bl->second, bl->third, bl->fourth);
 				}
 				break;
 
@@ -283,6 +342,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				{
 					bl->blockFlg = false;
 					bl->GetPos();
+					bl->blockSpawnCnt = 0;
+					bl->blockSpawnLimit = getBlockSpawnLimit(bl->first, bl->second, bl->third, bl->fourth);
 				}
 				break;
 
@@ -352,10 +413,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = false;
 		}
 
-
-		pl->All();
-		bk->Drawbackfront(*se, *pl);
-
+		if (!pl->changeDirectionModeFlg)
+		{
+			pl->All();
+			bk->Drawbackfront(*se, *pl);
+		}
 
 		//動いた前後とかの関係で二回やると今のところちょうどいいけど、もしかしたらどうにかなるかもしれないし、あるいはどうにもならないかもしれない
 
@@ -377,7 +439,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				pl->invincibleFlg = true;
 			}
-			else if (pl->invincibleFlg && !pl->damageFlg)
+			else if (pl->invincibleFlg && !pl->damageFlg && !pl->changeDirectionModeFlg)
 			{
 				pl->invincibleFlg = false;
 			}
@@ -404,6 +466,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	delete bk;
 	delete ob;
 	delete se;
+	delete pui;
 
 
 	DxLib_End();

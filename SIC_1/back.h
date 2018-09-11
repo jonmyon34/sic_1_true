@@ -1,7 +1,14 @@
 #pragma once
 #include "all.h"
-#define SCROLL_SPEED 2
-#define DOORPOS_Y 445
+#define SCROLL_SPEED 1
+
+#define DOORPOS_Y 176
+#define DOOR_LEFT_WIDTH 32
+#define DOOR_RIGHT_WIDTH 23
+#define DOOR_HEIGHT 83
+#define EDGE_WIDTH 16
+#define WINDOW_Y_RECT WINDOW_Y/288
+#define WINDOW_X_RECT (WINDOW_X - BACKSIDE_MARGIN*2)/224
 
 class back
 {
@@ -10,12 +17,16 @@ public:
 	double fx, fy;
 	int scrollspeed;
 	int scrollspeedsetter;
-	int playback_gh, titleback_gh;
+	int playback_gh, titleback_gh, playbackedge_gh;
+	int changeModeMargin_gh;
 	int playbackside_gh[2];//[0]が遠景[1]が近景
 	int door_gh;
 
 	int anim_x;
 	int animCnt;
+
+	int changeDirectionMode_x;
+	int changeDirectionMode_y;
 
 	bool doorFlg;//ドア開けるフラグ
 
@@ -32,13 +43,19 @@ public:
 		doorFlg = false;
 		titleback_gh = LoadGraph("Data/Image/SIC_1_back_test1.png");
 		LoadDivGraph("Data/Image/BG3.png", 2, 2, 1, 112, 96, playbackside_gh);
-		playback_gh = LoadGraph("Data/Image/BG1.png");
+		playback_gh = LoadGraph("Data/Image/BG1_A.png");
+		playbackedge_gh = LoadGraph("Data/Image/BG1_B.png");
+		changeModeMargin_gh = LoadGraph("Data/Image/clear_1.png");
 		door_gh = LoadGraph("Data/Image/door.png");
+
+		changeDirectionMode_x = 0;
+		changeDirectionMode_y = -60;
 	}
 	void Drawback(scene, player);
 	void Drawbackfront(scene, player);
-	void Drawdoor();
+	void Drawdoor(player);
 	void Move(player);
 	void All(scene, player);
 	void HitStop(scene, player);
+	void StopView();
 };

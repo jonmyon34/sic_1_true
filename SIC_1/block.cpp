@@ -54,3 +54,13 @@ int getBlockNo(int first, int second)
 	}
 }
 
+
+int getBlockSpawnLimit(int first,int second,int third,int fourth)
+{
+	first = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	second = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	third = rand() % (BLOCK_SPAWN_LIMIT / 4);
+	fourth = rand() % (BLOCK_SPAWN_LIMIT / 4);
+
+	return first + second + third + fourth;
+}
