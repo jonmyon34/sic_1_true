@@ -367,9 +367,9 @@ public:
 		DrawRectGraph(pos_x, pos_y, 0, 0, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
 	}
 
-	void Accele()
+	void Accele(scene se)
 	{
-		if (acceleration < PL_MAX_ACCELERATION)
+		if (acceleration < PL_MAX_ACCELERATION && se.playmode == PLAY)
 		{
 			if (acceleCnt >= ACCELE_INC_TIME)
 			{
@@ -394,11 +394,11 @@ public:
 		pos_y = direction_pl_pos_y(directionMode);
 	}
 
-	void All()
+	void All(scene se)
 	{
 		Move();
 		View();
-		Accele();
+		Accele(se);
 	}
 
 

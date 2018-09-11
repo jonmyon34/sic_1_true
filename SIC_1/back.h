@@ -22,6 +22,8 @@ public:
 	int playbackside_gh[2];//[0]‚ª‰“Œi[1]‚ª‹ßŒi
 	int door_gh;
 
+	int temp_y, temp_x, temp_fy, temp_fx;
+
 	int anim_x;
 	int animCnt;
 
@@ -38,6 +40,12 @@ public:
 		fy = 0;
 		scrollspeed = SCROLL_SPEED;
 		scrollspeedsetter = 0;
+		
+		temp_x = 0;
+		temp_y = 0;
+		temp_fx = 0;
+		temp_fy = 0;
+
 		anim_x = 0;
 		animCnt = 0;
 		doorFlg = false;

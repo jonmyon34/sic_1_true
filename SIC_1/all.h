@@ -17,7 +17,7 @@
 
 #define FLASHCNT_MAX 70
 
-#define BACK_MARGIN 50
+#define BACK_MARGIN 0//50
 #define BACKSIDE_MARGIN 112
 
 #define BLOCK_OUT_POS_Y -60

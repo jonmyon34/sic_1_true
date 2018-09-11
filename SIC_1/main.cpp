@@ -135,7 +135,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (se->playmode == PLAY && !pl->changeDirectionModeFlg)
 		{
 			bk->All(*se, *pl);
-			pui->All();
+			pui->All(*pl);
+			if (pl->hp <= 0)
+			{
+				doovermode(se);
+			}
+		}
+
+		if (se->playmode == OVER)
+		{
+			bk->All(*se, *pl);
+			pui->All(*pl);
+			pl->All(*se);
+			bk->Drawbackfront(*se, *pl);
+			se->Overmode(se);
 		}
 
 
@@ -279,7 +292,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			bk->HitStop(*se, *pl);
 		}
-		else if(!pl->changeDirectionModeFlg)
+		else if(!pl->changeDirectionModeFlg && (se->playmode == PLAY || se->playmode == TITLE))
 		{
 			if (bk->scrollspeed < SCROLL_SPEED)
 			{
@@ -413,9 +426,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = false;
 		}
 
-		if (!pl->changeDirectionModeFlg)
+		if (!pl->changeDirectionModeFlg && (se->playmode == PLAY || se->playmode == TITLE))
 		{
-			pl->All();
+			pl->All(*se);
 			bk->Drawbackfront(*se, *pl);
 		}
 
