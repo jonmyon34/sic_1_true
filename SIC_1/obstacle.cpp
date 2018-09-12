@@ -2,7 +2,7 @@
 
 int getObstacleRandPos_y()
 {
-	return EXIST_MIN_SIDE_RANGE_Y + rand() % (EXIST_MAX_SIDE_RANGE_Y - (EXIST_MIN_SIDE_RANGE_Y - 1));
+	return EXIST_MIN_SIDE_RANGE_Y + rand() % (EXIST_MAX_SIDE_RANGE_Y - (EXIST_MIN_SIDE_RANGE_Y - 1)-32);
 }
 
 int getObstacleSpawnLimit(int first, int second, int third, int fourth)

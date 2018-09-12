@@ -8,9 +8,14 @@ public:
 	int playmode;
 	int over_gh, over_gh_title, over_gh_retry;
 	int overselect;
+	int timer;
 	bool retryFlg;
+	bool titleFlg;
 	scene()
 	{
+		retryFlg = false;
+		titleFlg = false;
+		timer = 0;
 		playmode = TITLE;
 		overselect = 0;
 		over_gh = LoadGraph("Data/Image/gameover_font.png");
@@ -22,7 +27,7 @@ public:
 	void Overselect(scene*);
 };
 
-void doplaymode(scene*);//mode
+void doplaymode(scene*);
 void dotitlemode(scene*);
 void doclearmode(scene*);
 void doovermode(scene*);

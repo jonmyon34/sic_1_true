@@ -34,7 +34,7 @@ int changeModeRightLeft()
 	}
 }
 
-void changeDirectionMode(back &bk, player &pl,scene &se)
+void changeDirectionMode(back &bk, player &pl,scene &se,scenegame &sgm)
 {
 	if (!pl.changeDirectionModeFlg)
 	{
@@ -43,44 +43,103 @@ void changeDirectionMode(back &bk, player &pl,scene &se)
 		bk.animCnt = 0;
 		bk.scrollspeed = 0;
 		bk.scrollspeedsetter = 0;
+		pl.changeDirectionMode = changeModeRightLeft();
+		bk.changeDirectionMode = pl.changeDirectionMode;
+		sgm.scenegame_adjust_Flg = true;
+		sgm.scenegame_adjust_pos_y = bk.y;
+		sgm.scenegame_adjust_ply = pl.pos_y;
 	}
 
 	if (bk.animCnt < 180)
 	{
-		bk.Drawback(se, pl);
+		bk.anim_x = (bk.animCnt / 30) % 6;
+		bk.animCnt++;
+		if (sgm.scenegame_adjust_pos_y > 0 && sgm.scenegame_adjust_Flg)
+		{
+			if (sgm.scenegame_adjust_pos_y + DOORPOS_Y - 20 - sgm.scenegame_adjust_ply > 0 && sgm.scenegame_adjust_Flg)
+			{
+				pl.pos_y += 1;
+			}
+			else if (sgm.scenegame_adjust_pos_y + DOORPOS_Y - 20 - sgm.scenegame_adjust_ply < 0 && sgm.scenegame_adjust_Flg)
+			{
+				pl.pos_y -= 1;
+			}
+			else
+			{
+				sgm.scenegame_adjust_Flg = false;
+			}
+		}
+		else if(sgm.scenegame_adjust_pos_y<=0 && sgm.scenegame_adjust_Flg)
+		{
+			if (sgm.scenegame_adjust_pos_y+WINDOW_Y + DOORPOS_Y - 20 - sgm.scenegame_adjust_ply > 0 && sgm.scenegame_adjust_Flg)
+			{
+				pl.pos_y += 1;
+			}
+			else if (sgm.scenegame_adjust_pos_y +WINDOW_Y+ DOORPOS_Y - 20 - sgm.scenegame_adjust_ply < 0 && sgm.scenegame_adjust_Flg)
+			{
+				pl.pos_y -= 1;
+			}
+			else
+			{
+				sgm.scenegame_adjust_Flg = false;
+			}
+
+		}
+		bk.StopViewDoor();
+		bk.StopView();
 		pl.StopView();
+
 	}
 
 	if (bk.animCnt == 180)
 	{
 		bk.doorFlg = false;
 		bk.animCnt = 360;
-		pl.changeDirectionMode = changeModeRightLeft();
 	}
 
 	if (bk.animCnt == 360)
 	{
+		switch (pl.changeDirectionMode)
+		{
+		case PL_RIGHTSIDE_MODE:
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH, DOORPOS_Y + bk.y - 1, bk.anim_x * 32, 96, 32, 96, bk.door_gh, true);
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH, DOORPOS_Y + WINDOW_Y + bk.y - 1, bk.anim_x * 32, 96, 32, 96, bk.door_gh, true);
+
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH + 169, DOORPOS_Y + bk.y, 0 * 32, 0, 32, 96, bk.door_gh, true);
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH + 169, DOORPOS_Y + WINDOW_Y + bk.y, 0 * 32, 0, 32, 96, bk.door_gh, true);
+
+			break;
+
+		case PL_LEFTSIDE_MODE:
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH + 169, DOORPOS_Y + bk.y, bk.anim_x * 32, 0, 32, 96, bk.door_gh, true);
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH + 169, DOORPOS_Y + WINDOW_Y + bk.y, bk.anim_x * 32, 0, 32, 96, bk.door_gh, true);
+
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH, DOORPOS_Y + bk.y - 1, 0 * 32, 96, 32, 96, bk.door_gh, true);
+			DrawRectGraph(WINDOW_X / 2 - BACKSIDE_MARGIN + EDGE_WIDTH, DOORPOS_Y + WINDOW_Y + bk.y - 1, 0 * 32, 96, 32, 96, bk.door_gh, true);
+			break;
+		}
+
 		bk.StopView();
 		pl.StopView();
 
 		switch (pl.changeDirectionMode)
 		{
 		case PL_RIGHTSIDE_MODE:	//プレイヤーが右側
-			if (pl.speed < PL_SPEED_MAX)
+			if (pl.speed_x < PL_SPEED_MAX)
 			{
-				pl.speed += PL_SPEED_INC;
+				pl.speed_x += PL_SPEED_INC*2;
 			}
 
-			pl.pos_x = pl.pos_x - pl.speed;
+			pl.pos_x = pl.pos_x - pl.speed_x;
 			break;
 
 		case PL_LEFTSIDE_MODE:	//プレイヤーが左側
-			if (pl.speed < PL_SPEED_MAX)
+			if (pl.speed_x < PL_SPEED_MAX)
 			{
-				pl.speed += PL_SPEED_INC;
+				pl.speed_x += PL_SPEED_INC*2;
 			}
 
-			pl.pos_x = pl.pos_x + pl.speed;
+			pl.pos_x = pl.pos_x + pl.speed_x;
 			break;
 
 		default:
@@ -90,6 +149,7 @@ void changeDirectionMode(back &bk, player &pl,scene &se)
 
 	if (bk.animCnt == 360 && (pl.pos_x<-60 || pl.pos_x>WINDOW_X + 60))
 	{
+		bk.doorFlg = false;
 		bk.animCnt = 0;
 		pl.changeDirectionModeFlg = false;
 		pl.changeDirectionStartFlg = false;
@@ -119,6 +179,7 @@ void changeDirectionMode(back &bk, player &pl,scene &se)
 			ScreenFlip();
 			ClearDrawScreen();
 		}
+		pl.warpFlg = false;
 		bk.animCnt = 0;
 		pl.changeDirectionModeCnt = 0;
 	}
@@ -152,12 +213,12 @@ void changeDirectionModeDown(back &bk, player &pl, scene &se)
 
 		if (bk.changeDirectionMode_x == BACKSIDE_MARGIN)
 		{
-			if (pl.speed < PL_SPEED_MAX)
+			if (pl.speed_x < PL_SPEED_MAX)
 			{
-				pl.speed += PL_SPEED_INC;
+				pl.speed_x += PL_SPEED_INC;
 			}
 
-			pl.pos_x = pl.pos_x - pl.speed;
+			pl.pos_x = pl.pos_x - pl.speed_x;
 		}
 		break;
 
@@ -172,12 +233,12 @@ void changeDirectionModeDown(back &bk, player &pl, scene &se)
 
 		if (bk.changeDirectionMode_x == BACKSIDE_MARGIN)
 		{
-			if (pl.speed < PL_SPEED_MAX)
+			if (pl.speed_x < PL_SPEED_MAX)
 			{
-				pl.speed += PL_SPEED_INC;
+				pl.speed_x += PL_SPEED_INC;
 			}
 
-			pl.pos_x = pl.pos_x + pl.speed;
+			pl.pos_x = pl.pos_x + pl.speed_x;
 		}
 		break;
 	
@@ -198,6 +259,7 @@ void changeDirectionModeDown(back &bk, player &pl, scene &se)
 			pl.changeDirectionStartFlg = false;
 			pl.changeDirectionModeCnt = 0;
 			bk.animCnt = 0;
+			pl.warpFlg = false;
 			pl.directionMode = BLOCK_RISE_MODE;
 			pl.Direction();
 	}

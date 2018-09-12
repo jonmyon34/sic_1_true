@@ -2,11 +2,14 @@
 
 void doplaymode(scene *se)//終了するときに各所でmainのポインタseを渡してplaymodeを書き換えてください。
 {
+	mu->Playse(1);
+	mu->Playse(25);
 	se->playmode = PLAY;
 }
 
 void dotitlemode(scene *se)
 {
+	mu->Playse(54);
 	se->playmode = TITLE;
 }
 

@@ -3,6 +3,10 @@
 #define SCROLL_SPEED 1
 
 #define BACKSIDE_WIDTH 224
+#define LDOORPOS_X 16
+#define LDOORPOS_Y 176
+#define RDOORPOS_X 185
+#define RDOORPOS_Y 176
 #define DOORPOS_Y 176
 #define DOOR_LEFT_WIDTH 32
 #define DOOR_RIGHT_WIDTH 23
@@ -18,15 +22,18 @@ public:
 	double fx, fy;
 	int scrollspeed;
 	int scrollspeedsetter;
-	int playback_gh, titleback_gh, playbackedge_gh;
+	int playback_gh, playbackedge_gh;
+	int playbackstop_gh;
 	int changeModeMargin_gh;
 	int playbackside_gh[2];//[0]‚ª‰“Œi[1]‚ª‹ßŒi
 	int door_gh;
-
+	int titleback_gh, titleback_logo_gh;
 	int temp_y, temp_x, temp_fy, temp_fx;
 
 	int anim_x;
 	int animCnt;
+
+	int changeDirectionMode;
 
 	int changeDirectionMode_x;
 	int changeDirectionMode_y;
@@ -50,12 +57,16 @@ public:
 		anim_x = 0;
 		animCnt = 0;
 		doorFlg = false;
-		titleback_gh = LoadGraph("Data/Image/SIC_1_back_test1.png");
+		titleback_gh = LoadGraph("Data/Image/title.png");
+		titleback_logo_gh = LoadGraph("Data/Image/title_logo.png");
 		LoadDivGraph("Data/Image/BG3.png", 2, 2, 1, 112, 144, playbackside_gh);
 		playback_gh = LoadGraph("Data/Image/BG1_A.png");
 		playbackedge_gh = LoadGraph("Data/Image/BG1_B.png");
+		playbackstop_gh = LoadGraph("Data/Image/BG2_A.png");
 		changeModeMargin_gh = LoadGraph("Data/Image/clear_1.png");
 		door_gh = LoadGraph("Data/Image/door.png");
+
+		changeDirectionMode = 0;
 
 		changeDirectionMode_x = 0;
 		changeDirectionMode_y = -60;
@@ -67,4 +78,5 @@ public:
 	void All(scene, player);
 	void HitStop(scene, player);
 	void StopView();
+	void StopViewDoor();
 };

@@ -160,6 +160,7 @@
     <ClCompile Include="scenegame.cpp" />
     <ClCompile Include="ToDo.cpp" />
     <ClCompile Include="ui.cpp" />
+    <ClCompile Include="warpblock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="all.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenegame.h" />
     <ClInclude Include="ui.h" />
+    <ClInclude Include="warpblock.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

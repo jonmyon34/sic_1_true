@@ -9,6 +9,15 @@ bool check_hit_pos_y_rise(int pl_pos_y, int bl_pos_y, int blockNumber, int block
 	return false;
 }
 
+bool check_hit_pos_y_warpblock(int pl_pos_y, int wp_pos_y)
+{
+	if (pl_pos_y + PL_HEIGHT > wp_pos_y && pl_pos_y < wp_pos_y + BLOCK_HEIGHT)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool check_hit_pos_y_fall(int pl_pos_y, int bl_pos_y, int blockNumber, int blockExistMode)
 {
 	if (pl_pos_y + PL_HEIGHT >= bl_pos_y - ((blockNumber - blockExistMode)*BLOCK_HEIGHT) && pl_pos_y <= bl_pos_y - ((blockNumber - blockExistMode)* BLOCK_HEIGHT) + BLOCK_HEIGHT)
@@ -20,16 +29,16 @@ bool check_hit_pos_y_fall(int pl_pos_y, int bl_pos_y, int blockNumber, int block
 
 bool check_hit_pos_x_goright(int pl_pos_x,int ob_pos_x)
 {
-	if (pl_pos_x + PL_WIDTH >= ob_pos_x && pl_pos_x <= ob_pos_x + BLOCK_WIDTH)
+	if (pl_pos_x + PL_WIDTH > ob_pos_x && pl_pos_x < ob_pos_x + OBSTACLE_WIDTH)
 	{
 		return true;
 	}
 	return false;
 }
 
-bool check_hit_pos_x_goleft(int pl_pos_x, int ob_pos_y)
+bool check_hit_pos_x_goleft(int pl_pos_x, int ob_pos_x)
 {
-	if (pl_pos_x <= ob_pos_y + BLOCK_WIDTH && pl_pos_x + PL_WIDTH >= ob_pos_y)
+	if (pl_pos_x + PL_WIDTH > ob_pos_x && pl_pos_x < ob_pos_x + OBSTACLE_WIDTH)
 	{
 		return true;
 	}
@@ -48,11 +57,20 @@ bool checkHitBlock(int pl_pos_x, int bl_pos_x)
 
 bool checkHitObstacle(int pl_pos_y, int ob_pos_y)
 {
-	if (pl_pos_y + PL_HEIGHT > ob_pos_y && ob_pos_y + OBSTACLE_HEIGHT > pl_pos_y)
+	if (pl_pos_y + PL_HEIGHT > ob_pos_y && ob_pos_y + OBSTACLE_HEIGHT*2 > pl_pos_y)
 	{
 		return true;
 	}
 
+	return false;
+}
+
+bool checkHitWarp(int pl_pos_x, int wp_pos_x)
+{
+	if (pl_pos_x + PL_WIDTH > wp_pos_x && pl_pos_x < wp_pos_x + WARP_BLOCK_HEIGHT)
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -142,4 +160,11 @@ int getChangeDirectionModeLimit(int first, int second, int third, int fourth)
 	fourth = rand() % (BLOCK_SPAWN_LIMIT / 4);
 
 	return DIRECTION_CHANGE_MIN_RANGE + (first + second + third + fourth);
+}
+
+float sign(float n)
+{
+	if (n > 0) return 1.0f;
+	else if (n < 0) return -1.0f;
+	else return 0.f;
 }

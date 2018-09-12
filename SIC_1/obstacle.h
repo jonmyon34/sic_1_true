@@ -1,6 +1,6 @@
 #define OBSTACLE_WIDTH 16
 #define OBSTACLE_HEIGHT 16
-#define OBSTACLE_SPEED 9
+#define OBSTACLE_SPEED 6
 
 int getObstacleRandPos_y();
 int getObstacleSpawnLimit(int, int, int, int);
