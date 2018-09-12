@@ -6,9 +6,9 @@
 #include<time.h>
 
 
-#define WINDOW_X 512//384//1280
+#define WINDOW_X 384//1280
 //384が仕様
-#define WINDOW_Y 288//216//736
+#define WINDOW_Y 216//736
 //216が仕様
 #define MAX_WINDOW_EXTEND_RATE 5
 
@@ -17,7 +17,7 @@
 
 #define FLASHCNT_MAX 70
 
-#define BACK_MARGIN 0//50
+#define BACK_MARGIN 50
 #define BACKSIDE_MARGIN 112
 
 #define BLOCK_OUT_POS_Y -60
