@@ -267,7 +267,7 @@ public:
 					anim_x = (animCnt / 5) % 8;
 					anim_y = PL_HEIGHT;
 					animCnt++;
-					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					DrawRectRotaGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, 1, DX_PI*0.5, player_gh, true, false);
 					break;
 
 				case BLOCK_FALL_MODE:
@@ -291,7 +291,7 @@ public:
 					anim_x = (animCnt / 5) % 8;
 					anim_y = PL_HEIGHT;
 					animCnt++;
-					DrawRectGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, player_gh, true, false);
+					DrawRectRotaGraph(pos_x, pos_y, anim_x*PL_WIDTH, anim_y, PL_WIDTH, PL_HEIGHT, 1, DX_PI*1.5, player_gh, true, false);
 					break;
 
 				default:

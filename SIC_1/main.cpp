@@ -18,7 +18,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	player *pl = new player();
-	player ppl;
+	//player ppl;
 	block *bl = new block();
 	back *bk = new back();
 	obstacle *ob = new obstacle();
@@ -79,6 +79,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 
+		if (pl->changeDirectionModeCnt == pl->changeDirectionModeLimit)
+		{
+
+		}
+
 
 		//位置変更
 		if (CheckHitKey(KEY_INPUT_0))
@@ -93,9 +98,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (CheckHitKey(KEY_INPUT_1))
 		{
 			pl->directionMode = PL_RIGHTSIDE_MODE;
+			ob->directionMode = PL_RIGHTSIDE_MODE;
 			bk->fx = 0;
 			bk->x = 0;
 			pl->Direction();
+			ob->GetPos();
 		}
 
 		if (CheckHitKey(KEY_INPUT_2))
@@ -110,9 +117,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (CheckHitKey(KEY_INPUT_3))
 		{
 			pl->directionMode = PL_LEFTSIDE_MODE;
+			ob->directionMode = PL_LEFTSIDE_MODE;
 			bk->fx = 0;
 			bk->x = 0;
 			pl->Direction();
+			ob->GetPos();
 		}
 
 		if (CheckHitKey(KEY_INPUT_5))
@@ -160,9 +169,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					pl->expFlg[i] = false;
 				}
 				pl->expCnt = 0;
+				bl->blockFlg = false;
+				ob->obstacleFlg = false;
 				se->overselect = 0;
 				doplaymode(se);
 				se->retryFlg = false;
+				bl->blockSpawnCnt = -150;
+				bl->GetPos();
+				ob->obstacleSpawnCnt = -120;
 			}
 
 		}
@@ -205,7 +219,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			spaceFlg = true;
 		}
 
-		if (se->playmode == PLAY  && !pl->changeDirectionModeFlg)
+		if (se->playmode == PLAY  && !pl->changeDirectionModeFlg && bl->blockSpawnCnt != bl->blockSpawnLimit)
 		{
 			bl->blockSpawnCnt++;
 		}
@@ -213,6 +227,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (se->playmode == PLAY && !bl->blockFlg && bl->blockSpawnCnt == bl->blockSpawnLimit && !pl->changeDirectionModeFlg)
 		{
 			bl->blockFlg = true;
+		}
+
+		if (se->playmode == PLAY && !pl->changeDirectionModeFlg && ob->obstacleSpawnCnt != ob->obstacleSpawnLimit)
+		{
+			ob->obstacleSpawnCnt++;
+		}
+
+		if (se->playmode == PLAY && !ob->obstacleFlg && ob->obstacleSpawnCnt == ob->obstacleSpawnLimit && !pl->changeDirectionModeFlg)
+		{
+			ob->obstacleFlg = true;
 		}
 
 
@@ -320,11 +344,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (se->playmode == PLAY&&!pl->changeDirectionModeFlg)
 		{
 			pl->hitstopCnt--;
-			pl->changeDirectionModeCnt++;
+			if (pl->changeDirectionModeCnt != pl->changeDirectionModeLimit)
+			{
+				pl->changeDirectionModeCnt++;
+			}
 		}
 
-		if (se->playmode == PLAY && pl->changeDirectionModeCnt == pl->changeDirectionModeLimit)
+		if (se->playmode == PLAY && pl->changeDirectionModeCnt == pl->changeDirectionModeLimit && bl->speed != 0 && !pl->hitstopFlg /*&& !bl->blockFlg && !ob->obstacleFlg*/)
 		{
+			if (bl->blockFlg != false && ob->obstacleFlg != false)
+			{
+				bl->blockFlg = false;
+				ob->obstacleFlg = false;
+			}
 			switch (pl->directionMode)
 			{
 			case BLOCK_RISE_MODE:
@@ -332,7 +364,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				changeDirectionMode(*bk, *pl, *se);
 				if (!pl->changeDirectionModeFlg)
 				{
+					bl->blockFlg = false;
+					ob->obstacleFlg = false;
 					pl->Direction();
+					ob->obstacleSpawnCnt = -120;
+					ob->directionMode = pl->directionMode;
+					ob->GetPos();
 				}
 				break;
 
@@ -342,6 +379,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (!pl->changeDirectionModeFlg)
 				{
 					bl->blockSpawnCnt = -120;
+					ob->obstacleFlg = false;
+					bl->GetPos();
+					bl->blockFlg = false;
+					ob->directionMode = pl->directionMode;
+					ob->GetPos();
 				}
 				break;
 			}
@@ -383,25 +425,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 		//障害物フラグ管理
-		if (ob->obstacleFlg)
+		if (ob->obstacleFlg && !pl->directionMode == BLOCK_RISE_MODE)
 		{
 			ob->Move();
 			ob->View();
 			switch (ob->directionMode)
 			{
 			case PL_RIGHTSIDE_MODE:
-				if (ob->pos_x > WINDOW_X + OBSTACLE_OUT_POS_X)
+				if (ob->pos_x > WINDOW_X + OBSTACLE_WIDTH)
 				{
 					ob->obstacleFlg = false;
 					ob->GetPos();
+					ob->obstacleSpawnLimit = getObstacleSpawnLimit(ob->first, ob->second, ob->third, ob->fourth);
+					ob->obstacleSpawnCnt = 0;
 				}
 				break;
 
 			case PL_LEFTSIDE_MODE:
-				if (ob->pos_x < -OBSTACLE_OUT_POS_X)
+				if (ob->pos_x < OBSTACLE_WIDTH)
 				{
 					ob->obstacleFlg = false;
 					ob->GetPos();
+					ob->obstacleSpawnLimit = getObstacleSpawnLimit(ob->first, ob->second, ob->third, ob->fourth);
+					ob->obstacleSpawnCnt = 0;
 				}
 			}
 			
