@@ -69,7 +69,7 @@ public:
 		changeDirectionMode = 0;
 
 		changeDirectionMode_x = 0;
-		changeDirectionMode_y = -60;
+		changeDirectionMode_y = -120;
 	}
 	void Drawback(scene, player);
 	void Drawbackfront(scene, player);

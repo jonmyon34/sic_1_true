@@ -203,8 +203,8 @@ void changeDirectionModeDown(back &bk, player &pl, scene &se)
 	switch (pl.directionMode)
 	{
 	case PL_RIGHTSIDE_MODE:
-		DrawRectGraph(bk.changeDirectionMode_x - BACKSIDE_MARGIN, bk.changeDirectionMode_y, 112, 0, BACKSIDE_MARGIN, WINDOW_Y, bk.playback_gh, true, false);
-		DrawRectGraph(bk.changeDirectionMode_x - BACKSIDE_MARGIN, 150 - bk.changeDirectionMode_y, 112, 0, BACKSIDE_MARGIN, WINDOW_Y, bk.playback_gh, true, false);
+		DrawRectGraph(bk.changeDirectionMode_x - BACKSIDE_MARGIN, bk.changeDirectionMode_y, 112, 0, BACKSIDE_MARGIN, BACK_HEIGHT, bk.playback_gh, true, false);
+		DrawRectGraph(bk.changeDirectionMode_x - BACKSIDE_MARGIN, 40 - bk.changeDirectionMode_y, 112, 0, BACKSIDE_MARGIN, BACK_HEIGHT, bk.playback_gh, true, false);
 
 		if (bk.changeDirectionMode_x < BACKSIDE_MARGIN)
 		{
@@ -223,8 +223,8 @@ void changeDirectionModeDown(back &bk, player &pl, scene &se)
 		break;
 
 	case PL_LEFTSIDE_MODE:
-		DrawRectGraph(WINDOW_X-bk.changeDirectionMode_x, bk.changeDirectionMode_y, 0, 0, BACKSIDE_MARGIN, WINDOW_Y, bk.playback_gh, true, false);
-		DrawRectGraph(WINDOW_X-bk.changeDirectionMode_x , 150 - bk.changeDirectionMode_y, 0, 0, BACKSIDE_MARGIN, WINDOW_Y, bk.playback_gh, true, false);
+		DrawRectGraph(WINDOW_X-bk.changeDirectionMode_x, bk.changeDirectionMode_y, 0, 0, BACKSIDE_MARGIN, BACK_HEIGHT, bk.playback_gh, true, false);
+		DrawRectGraph(WINDOW_X-bk.changeDirectionMode_x , 40 - bk.changeDirectionMode_y, 0, 0, BACKSIDE_MARGIN, BACK_HEIGHT, bk.playback_gh, true, false);
 	
 		if (bk.changeDirectionMode_x < BACKSIDE_MARGIN)
 		{
