@@ -153,6 +153,7 @@
     <ClCompile Include="item.cpp" />
     <ClCompile Include="KBpreview.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="music.cpp" />
     <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="back.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="KBpreview.h" />
+    <ClInclude Include="music.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scene.h" />

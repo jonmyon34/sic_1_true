@@ -79,9 +79,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 
-		if (pl->changeDirectionModeCnt == pl->changeDirectionModeLimit)
+		pui->combo_by_pl = pl->combo;
+		pui->combo_lim_by_pl = pl->combo_lim;
+		pui->score_by_pl = pl->score;
+		if (pl->combo_lim <= 0)
 		{
-
+			pl->combo = 0;
+		}
+		else
+		{
+			pl->combo_lim--;
 		}
 
 
@@ -251,6 +258,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				if (checkHitBlock(pl->pos_x, bl->pos_x))
 				{
 					pl->hitFlg = true;
+					pl->combo_lim = COMBO_LIMIT;
+					pl->combo++;
 					bl->nextBlockMargin = pl->pos_y - (bl->pos_y + ((bl->blockNumber - bl->blockExistMode)*BLOCK_HEIGHT));
 					if (bl->blockExistMode > 0)
 					{
@@ -263,10 +272,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 					if (pl->acceleration <= 0)
 					{
+						pl->combo_lim = 0;
 						pl->hp--;
 						pl->damageFlg = true;
 					}
-
 				}
 			}
 			break;
@@ -321,6 +330,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		default:
 			break;
+		}
+
+		if (pl->combo > 0 && pl->hitFlg)
+		{
+			pl->score += pl->combo * SCORE_INC;
+		}
+		
+		if (pl->combo <= 0)
+		{
+			pl->score = 0;
 		}
 
 		if (!pl->changeDirectionModeFlg)

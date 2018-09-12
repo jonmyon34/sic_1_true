@@ -74,6 +74,10 @@ public:
 	int changeDirectionModeLimit;
 	bool invincibleFlg;
 
+	int score;
+	int combo;
+	int combo_lim;
+
 	int player_gh;
 	int player_UP_gh;
 	int player_gh_death;
@@ -127,6 +131,10 @@ public:
 		second = 0;
 		third = 0;
 		fourth = 0;
+
+		score = 0;
+		combo = 0;
+		combo_lim = COMBO_LIMIT;
 
 		directionMode = 0;
 		changeDirectionMode = 0;

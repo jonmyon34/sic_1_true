@@ -2,6 +2,7 @@
 #include "all.h"
 #define SCROLL_SPEED 1
 
+#define BACKSIDE_WIDTH 224
 #define DOORPOS_Y 176
 #define DOOR_LEFT_WIDTH 32
 #define DOOR_RIGHT_WIDTH 23
@@ -40,7 +41,7 @@ public:
 		fy = 0;
 		scrollspeed = SCROLL_SPEED;
 		scrollspeedsetter = 0;
-		
+
 		temp_x = 0;
 		temp_y = 0;
 		temp_fx = 0;
@@ -50,7 +51,7 @@ public:
 		animCnt = 0;
 		doorFlg = false;
 		titleback_gh = LoadGraph("Data/Image/SIC_1_back_test1.png");
-		LoadDivGraph("Data/Image/BG3.png", 2, 2, 1, 112, 96, playbackside_gh);
+		LoadDivGraph("Data/Image/BG3.png", 2, 2, 1, 112, 144, playbackside_gh);
 		playback_gh = LoadGraph("Data/Image/BG1_A.png");
 		playbackedge_gh = LoadGraph("Data/Image/BG1_B.png");
 		changeModeMargin_gh = LoadGraph("Data/Image/clear_1.png");

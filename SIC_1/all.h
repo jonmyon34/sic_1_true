@@ -31,6 +31,8 @@
 
 #define DIRECTION_CHANGE_MIN_RANGE 900
 
+#define COMBO_LIMIT 360
+#define SCORE_INC 2
 
 
 #include"KBpreview.h"
@@ -42,3 +44,4 @@
 #include"obstacle.h"
 #include"ui.h"
 #include"scenegame.h"
+#include"music.h"

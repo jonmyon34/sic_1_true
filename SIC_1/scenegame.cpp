@@ -15,6 +15,24 @@
 //		ClearDrawScreen();
 //	}
 //}
+int changeModeRightLeft()
+{
+	switch (rand() % 4)
+	{
+	case 0:
+	case 2:
+		return PL_RIGHTSIDE_MODE;
+		break;
+
+	case 1:
+	case 3:
+		return PL_LEFTSIDE_MODE;
+		break;
+
+	default:
+		break;
+	}
+}
 
 void changeDirectionMode(back &bk, player &pl,scene &se)
 {
@@ -37,7 +55,7 @@ void changeDirectionMode(back &bk, player &pl,scene &se)
 	{
 		bk.doorFlg = false;
 		bk.animCnt = 360;
-		pl.changeDirectionMode = PL_RIGHTSIDE_MODE;
+		pl.changeDirectionMode = changeModeRightLeft();
 	}
 
 	if (bk.animCnt == 360)
